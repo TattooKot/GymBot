@@ -26,6 +26,17 @@ public class Client {
     @Column(name = "count")
     private Integer count;
 
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", payday=" + payday +
+                ", lastday=" + lastday +
+                ", count=" + count +
+                '}';
+    }
 
     public Integer getCount() {
         return count;
