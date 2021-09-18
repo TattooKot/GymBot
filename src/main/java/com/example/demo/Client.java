@@ -1,14 +1,9 @@
 package com.example.demo;
 
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Arrays;
 
-@Table(name = "clients", indexes = {
-        @Index(name = "idx_client_frequency", columnList = "frequency")
-})
+@Table(name = "clients")
 @Entity
 public class Client {
     @Id
@@ -31,40 +26,6 @@ public class Client {
     @Column(name = "count")
     private Integer count;
 
-    @Type( type = "string-array" )
-    @Column(name = "frequency")
-    private String[] frequency;
-
-    @Override
-    public String toString() {
-        return  name + '\'' +
-                phone + '\'' +
-                ", payday=" + payday +
-                ", lastday=" + lastday +
-                ", count=" + count +
-                ", frequency=" + Arrays.toString(frequency) +
-                '}';
-    }
-
-    public String[] getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(String[] frequency) {
-        this.frequency = frequency;
-    }
-
-    @Override
-    public String toString() {
-        return "Client{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", payday=" + payday +
-                ", lastday=" + lastday +
-                ", count=" + count +
-                '}';
-    }
 
     public Integer getCount() {
         return count;
