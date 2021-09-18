@@ -28,14 +28,11 @@ public class Client {
 
     @Override
     public String toString() {
-        return "Client{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", payday=" + payday +
-                ", lastday=" + lastday +
-                ", count=" + count +
-                '}';
+        return name + '\n' +
+               "From: " + payday + "\n" +
+                "To: " + lastday + "\n" +
+                "Count: " + count + "\n" +
+                "Phone: " + phone;
     }
 
     public Integer getCount() {
