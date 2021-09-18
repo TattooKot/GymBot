@@ -30,7 +30,7 @@ public class Bot extends TelegramLongPollingBot {
             if(request.toLowerCase().contains("add"))
                 send(controller.add(update));
 
-            if(request.matches("\\d{1,2}\\.\\d\\d.{0,}"))
+            if(request.matches("\\d{1,2}\\.\\d{2}.{0,}"))
                 send(controller.addVisit(update));
 
             if(request.equals("04k0"))

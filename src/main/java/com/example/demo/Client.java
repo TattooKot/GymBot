@@ -40,8 +40,14 @@ public class Client {
          if(!phone.isEmpty())
              result += "\n" + "Phone: " + phone;
 
-         if(!frequency.isEmpty())
-             result += "\n" + "Frequency: " + frequency;
+         if(!frequency.isEmpty()){
+             result += "\n" + "Frequency:  \n";
+
+             for(String date : frequency.split(","))
+                 result += date + "\n";
+
+         }
+
 
         return result;
     }

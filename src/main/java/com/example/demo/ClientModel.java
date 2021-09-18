@@ -104,9 +104,13 @@ public class ClientModel {
         for(String s : visitors){
             int id = Integer.parseInt(s);
             Client client = clientService.getById(id);
-            client.setFrequency(date + "," + client.getFrequency());
-            client.setCount(client.getCount() + 1);
-            result.append(clientService.update(client).getName() + "\n");
+
+            if(!client.getFrequency().contains(date)) {
+                client.setFrequency(date + "," + client.getFrequency());
+                client.setCount(client.getCount() + 1);
+                result.append(clientService.update(client).getName() + "\n");
+            }else result.append(clientService.update(client).getName() + "(++)" + "\n");
+
         }
 
         SendMessage all = getAll(update);
