@@ -66,18 +66,6 @@ public class Client {
                 '}';
     }
 
-    @Override
-    public String toString() {
-        return "Client{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", payday=" + payday +
-                ", lastday=" + lastday +
-                ", count=" + count +
-                '}';
-    }
-
     public Integer getCount() {
         return count;
     }
