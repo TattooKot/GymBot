@@ -25,4 +25,10 @@ public class ClientService {
         return clientRepository.findById(id).orElse(null);
     }
 
+    public Client update(Client client){
+        return clientRepository.save(client);
+    }
+
+
+
 }

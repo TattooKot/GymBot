@@ -88,7 +88,7 @@ public class ClientModel {
 
 
 
-        String[] visitors = request.substring(6).trim().contains(",") ? request.substring(6).split(",") : new String[]{request.substring(6)};
+        String[] visitors =  request.substring(6).split(" ");
 
         for(String s : visitors) {
             if (!request.matches("[0-9]+") && s.length() >= 3)
@@ -98,16 +98,23 @@ public class ClientModel {
             if(!clientService.checkById(id))
                 return new SendMessage(chatId, "Користувача з id " + id + " не знайдено");
         }
+
+        StringBuilder result = new StringBuilder(date + "\n");
+
         for(String s : visitors){
             int id = Integer.parseInt(s);
             Client client = clientService.getById(id);
             client.setFrequency(date + "," + client.getFrequency());
             client.setCount(client.getCount() + 1);
+            result.append(clientService.update(client).getName() + "\n");
         }
 
         SendMessage all = getAll(update);
 
-        return new SendMessage(chatId,request.replace(',', '\n') + "\n\n" + all.getText());
+
+
+
+        return new SendMessage(chatId,result.toString() + "\n" + all.getText());
 
     }
 }
