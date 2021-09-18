@@ -17,7 +17,7 @@ public class DemoApplication {
 			while(true) {
 				HttpURLConnection connection = null;
 				try {
-					connection = (HttpURLConnection) new URL("google.com").openConnection();
+					connection = (HttpURLConnection) new URL("https://google.com/").openConnection();
 					connection.setRequestMethod("HEAD");
 					int responseCode = connection.getResponseCode();
 					if (responseCode != 200) {
