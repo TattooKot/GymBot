@@ -86,7 +86,9 @@ public class ClientModel {
         if(request.length() == 5)
             return new SendMessage(chatId,"Щоб додати візити вкажіть дату та індекси через ','  \n");
 
-        String[] visitors = request.substring(5).split(",");
+
+
+        String[] visitors = request.substring(6).trim().contains(",") ? request.substring(6).split(",") : new String[]{request.substring(6)};
 
         for(String s : visitors) {
             if (!request.matches("[0-9]+") && s.length() >= 3)
