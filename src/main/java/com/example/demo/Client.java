@@ -26,13 +26,32 @@ public class Client {
     @Column(name = "count")
     private Integer count;
 
+    @Column(name = "frequency")
+    private String frequency;
+
+
     @Override
     public String toString() {
-        return name + '\n' +
-               "From: " + payday + "\n" +
+         String result = name + '\n' +
+                "From: " + payday + "\n" +
                 "To: " + lastday + "\n" +
-                "Count: " + count + "\n" +
-                "Phone: " + phone;
+                "Count: " + count;
+
+         if(!phone.isEmpty())
+             result += "\n" + "Phone: " + phone;
+
+         if(!frequency.isEmpty())
+             result += "\n" + "Frequency: " + frequency;
+
+        return result;
+    }
+
+    public String getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
     }
 
     public Integer getCount() {

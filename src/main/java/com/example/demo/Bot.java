@@ -27,6 +27,9 @@ public class Bot extends TelegramLongPollingBot {
             if(request.toLowerCase().contains("id") || request.matches("^\\d{1,2}$"))
                 send(controller.getById(update));
 
+            if(request.toLowerCase().contains("add"))
+                send(controller.add(update));
+
             if(request.equals("04k0"))
                 send(controller.bestFrau(update));
 

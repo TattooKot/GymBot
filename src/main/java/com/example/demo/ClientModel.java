@@ -67,4 +67,14 @@ public class ClientModel {
 
         return message;
     }
+
+    public SendMessage add(Update update) {
+        String request = update.getMessage().getText();
+        String chatId = update.getMessage().getChatId().toString();
+
+        if(request.length() == 3)
+            return new SendMessage(chatId,"Щоб додати користувача внесіть данні через ','  \n");
+
+        return new SendMessage(chatId,"Щоб додати користувача внесіть данні через ','  \n");
+    }
 }
