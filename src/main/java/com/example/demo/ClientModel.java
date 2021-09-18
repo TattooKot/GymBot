@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -89,26 +88,24 @@ public class ClientModel {
 
         String[] visitors = request.substring(5).split(",");
 
-        return new SendMessage(chatId, request);
+        for(String s : visitors) {
+            if (!request.matches("[0-9]+") && s.length() >= 3)
+                return new SendMessage(chatId, s + " не правильний id");
 
-//        for(String s : visitors) {
-//            if (!request.matches("[0-9]+") && s.length() >= 3)
-//                return new SendMessage(chatId, s + " не правильний id");
-//
-//            int id = Integer.parseInt(s);
-//            if(!clientService.checkById(id))
-//                return new SendMessage(chatId, "Користувача з id " + id + " не знайдено");
-//        }
-//        for(String s : visitors){
-//            int id = Integer.parseInt(s);
-//            Client client = clientService.getById(id);
-//            client.setFrequency(date + "," + client.getFrequency());
-//            client.setCount(client.getCount() + 1);
-//        }
-//
-//        SendMessage all = getAll(update);
-//
-//        return new SendMessage(chatId,request.replace(',', '\n') + "\n\n" + all.getText());
+            int id = Integer.parseInt(s);
+            if(!clientService.checkById(id))
+                return new SendMessage(chatId, "Користувача з id " + id + " не знайдено");
+        }
+        for(String s : visitors){
+            int id = Integer.parseInt(s);
+            Client client = clientService.getById(id);
+            client.setFrequency(date + "," + client.getFrequency());
+            client.setCount(client.getCount() + 1);
+        }
+
+        SendMessage all = getAll(update);
+
+        return new SendMessage(chatId,request.replace(',', '\n') + "\n\n" + all.getText());
 
     }
 }
