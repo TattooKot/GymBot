@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -86,26 +87,28 @@ public class ClientModel {
         if(request.length() == 5)
             return new SendMessage(chatId,"Щоб додати візити вкажіть дату та індекси через ','  \n");
 
-        String[] visitors = request.substring(6).split(",");
+        String[] visitors = request.substring(5).split(",");
 
-        for(String s : visitors) {
-            if (!request.matches("[0-9]+") && s.length() >= 3)
-                return new SendMessage(chatId, s + " не правильний id");
+        return new SendMessage(chatId, Arrays.toString(visitors));
 
-            int id = Integer.parseInt(s);
-            if(!clientService.checkById(id))
-                return new SendMessage(chatId, "Користувача з id " + id + " не знайдено");
-        }
-        for(String s : visitors){
-            int id = Integer.parseInt(s);
-            Client client = clientService.getById(id);
-            client.setFrequency(date + "," + client.getFrequency());
-            client.setCount(client.getCount() + 1);
-        }
-
-        SendMessage all = getAll(update);
-
-        return new SendMessage(chatId,request.replace(',', '\n') + "\n\n" + all.getText());
+//        for(String s : visitors) {
+//            if (!request.matches("[0-9]+") && s.length() >= 3)
+//                return new SendMessage(chatId, s + " не правильний id");
+//
+//            int id = Integer.parseInt(s);
+//            if(!clientService.checkById(id))
+//                return new SendMessage(chatId, "Користувача з id " + id + " не знайдено");
+//        }
+//        for(String s : visitors){
+//            int id = Integer.parseInt(s);
+//            Client client = clientService.getById(id);
+//            client.setFrequency(date + "," + client.getFrequency());
+//            client.setCount(client.getCount() + 1);
+//        }
+//
+//        SendMessage all = getAll(update);
+//
+//        return new SendMessage(chatId,request.replace(',', '\n') + "\n\n" + all.getText());
 
     }
 }
