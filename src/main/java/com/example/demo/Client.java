@@ -32,6 +32,7 @@ public class Client {
 
     @Override
     public String toString() {
+
          String result = name + '\n' +
                 "From: " + payday + "\n" +
                 "To: " + lastday + "\n" +
@@ -41,7 +42,7 @@ public class Client {
              result += "\n" + "Phone: " + phone;
 
          if(!frequency.isEmpty()){
-             result += "\n" + "Frequency:  \n";
+             result += "\n\n" + "Frequency:  \n";
 
              for(String date : frequency.split(","))
                  result += date + "\n";

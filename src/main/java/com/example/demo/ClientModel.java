@@ -81,7 +81,7 @@ public class ClientModel {
     public SendMessage addVisit(Update update) {
         String request = update.getMessage().getText();
         String chatId = update.getMessage().getChatId().toString();
-        String date = request.substring(0,4);
+        String date = request.substring(0,5);
 
         if(request.length() == 5)
             return new SendMessage(chatId,"Щоб додати візити вкажіть дату та індекси через ','  \n");
