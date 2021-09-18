@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DemoApplication {
 
 	public static void main(String[] args) {
-		Ping.t.start();
+//		Ping.t.start();
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
