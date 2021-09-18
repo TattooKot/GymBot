@@ -89,7 +89,7 @@ public class ClientModel {
 
         String[] visitors = request.substring(5).split(",");
 
-        return new SendMessage(chatId, Arrays.toString(visitors));
+        return new SendMessage(chatId, date + "/" + request.substring(5));
 
 //        for(String s : visitors) {
 //            if (!request.matches("[0-9]+") && s.length() >= 3)
