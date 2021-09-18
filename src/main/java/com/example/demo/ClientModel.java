@@ -77,4 +77,35 @@ public class ClientModel {
 
         return new SendMessage(chatId,"Щоб додати користувача внесіть данні через ','  \n");
     }
+
+    public SendMessage addVisit(Update update) {
+        String request = update.getMessage().getText();
+        String chatId = update.getMessage().getChatId().toString();
+        String date = request.substring(0,4);
+
+        if(request.length() == 5)
+            return new SendMessage(chatId,"Щоб додати візити вкажіть дату та індекси через ','  \n");
+
+        String[] visitors = request.substring(6).split(",");
+
+        for(String s : visitors) {
+            if (!request.matches("[0-9]+") && s.length() >= 3)
+                return new SendMessage(chatId, s + " не правильний id");
+
+            int id = Integer.parseInt(s);
+            if(!clientService.checkById(id))
+                return new SendMessage(chatId, "Користувача з id " + id + " не знайдено");
+        }
+        for(String s : visitors){
+            int id = Integer.parseInt(s);
+            Client client = clientService.getById(id);
+            client.setFrequency(date + "," + client.getFrequency());
+            client.setCount(client.getCount() + 1);
+        }
+
+        SendMessage all = getAll(update);
+
+        return new SendMessage(chatId,request.replace(',', '\n') + "\n\n" + all.getText());
+
+    }
 }
