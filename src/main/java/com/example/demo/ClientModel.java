@@ -31,7 +31,13 @@ public class ClientModel {
         clients.sort(new ClientComparator());
 
         StringBuilder stringBuilder = new StringBuilder();
-        clients.forEach(client -> stringBuilder.append(String.format("%d.%s: %d", client.getId(),client.getName(), client.getCount())).append("\n"));
+
+        for(Client client : clients){
+
+            if(client.getCount() >= 8)
+                stringBuilder.append(String.format("%d.%s: %d(!)", client.getId(),client.getName(), client.getCount())).append("\n");
+            else stringBuilder.append(String.format("%d.%s: %d", client.getId(),client.getName(), client.getCount())).append("\n");
+        }
 
         SendMessage message = new SendMessage();
         message.setChatId(update.getMessage().getChatId().toString());
@@ -86,8 +92,6 @@ public class ClientModel {
         if(request.length() == 5)
             return new SendMessage(chatId,"Щоб додати візити вкажіть дату та індекси через ','  \n");
 
-
-
         String[] visitors =  request.substring(6).split(" ");
 
         for(String s : visitors) {
@@ -115,7 +119,7 @@ public class ClientModel {
 
         SendMessage all = getAll(update);
 
-        return new SendMessage(chatId,result.toString() + "\n" + all.getText());
+        return new SendMessage(chatId,result + "\n" + all.getText());
 
     }
 }
