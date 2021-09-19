@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 
@@ -110,8 +111,18 @@ public class ClientModel {
             Client client = clientService.getById(id);
 
             if(!client.getFrequency().contains(date)) {
-                client.setFrequency(date + "," + client.getFrequency());
-                client.setCount(client.getCount() + 1);
+
+                if(client.getCount() == 10) {
+                    client.setFrequency(date + "(!)," + client.getFrequency());
+                    client.setCount(1);
+                    client.setName(client.getName() + "(!)");
+                    client.setPayday(LocalDate.now());
+                }
+                else {
+                    client.setFrequency(date + "," + client.getFrequency());
+                    client.setCount(client.getCount() + 1);
+                }
+
                 result.append(clientService.update(client).getName() + "\n");
             }else result.append(clientService.update(client).getName() + "(++)" + "\n");
 

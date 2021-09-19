@@ -2,6 +2,7 @@ package com.example.demo;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -37,8 +38,8 @@ public class Client {
     public String toString() {
 
          String result = name + '\n' +
-                "From: " + payday + "\n" +
-                "To: " + lastday;
+                "From: " + payday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "\n" +
+                "To: " + lastday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 
          if(count >= 8) result += "\n" + "Count: " + count + "(!)";
          else result += "\n" + "Count: " + count;
@@ -92,6 +93,7 @@ public class Client {
 
     public void setPayday(LocalDate payday) {
         this.payday = payday;
+        this.lastday = payday.plusDays(35);
     }
 
     public String getPhone() {
