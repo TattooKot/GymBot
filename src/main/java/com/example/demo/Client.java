@@ -38,8 +38,10 @@ public class Client {
 
          String result = name + '\n' +
                 "From: " + payday + "\n" +
-                "To: " + lastday + "\n" +
-                "Count: " + count;
+                "To: " + lastday;
+
+         if(count >= 8) result += "\n" + "Count: " + count + "(!)";
+         else result += "\n" + "Count: " + count;
 
          if(!phone.isEmpty())
              result += "\n" + "Phone: " + phone;
