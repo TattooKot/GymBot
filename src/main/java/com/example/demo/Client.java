@@ -2,6 +2,9 @@ package com.example.demo;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 @Table(name = "clients")
 @Entity
@@ -44,7 +47,11 @@ public class Client {
          if(!frequency.isEmpty()){
              result += "\n\n" + "Frequency:  \n";
 
-             for(String date : frequency.split(","))
+             ArrayList<String> dates = new ArrayList<>(Arrays.asList(frequency.split(",")));
+
+             dates.sort(Comparator.reverseOrder());
+
+             for(String date : dates)
                  result += date + "\n";
 
          }

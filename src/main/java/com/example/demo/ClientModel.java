@@ -115,9 +115,6 @@ public class ClientModel {
 
         SendMessage all = getAll(update);
 
-
-
-
         return new SendMessage(chatId,result.toString() + "\n" + all.getText());
 
     }
