@@ -41,6 +41,8 @@ public class Client {
                 "From: " + payday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "\n" +
                 "To: " + lastday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 
+         if(lastday.isAfter(LocalDate.now().minusDays(1))) result += "\n" + "(!)Time expired(!))";
+
          if(count >= 8) result += "\n" + "Count: " + count + "(!)";
          else result += "\n" + "Count: " + count;
 
