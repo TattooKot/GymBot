@@ -7,7 +7,12 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -79,6 +84,37 @@ public class ClientView {
 
         return createResponseMessage(update,result + "\n" + controller.getAll().toString());
 
+    }
+
+    public SendMessage addPayment(Update update) {
+        String request = update.getMessage().getText();
+
+        if(request.length() == 7) {
+            return createResponseMessage(update, "Щоб додати оплату вкажіть дату та id\n");
+        } else if(request.length() == 13){
+            return createResponseMessage(update, "Щоб додати оплату вкажіть також id\n");
+        }else if(request.length() == 15 || request.length() == 16){
+            String date = request.substring(8, 13) + ".2021";
+            int id = checkId(request.substring(14));
+
+            if(id == -1){
+                return createResponseMessage(update, "Id does not exist");
+            }
+
+            LocalDate payDay = null;
+
+            try {
+                payDay = new SimpleDateFormat("dd.MM.yyyy").parse(date)
+                        .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            return createResponseMessage(update, "Payment added:\n" + controller.addPayment(payDay, id));
+
+        } else {
+            return createResponseMessage(update, "Помилка");
+        }
     }
 
     private SendMessage createResponseMessage(Update update, String text){

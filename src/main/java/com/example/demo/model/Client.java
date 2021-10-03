@@ -37,32 +37,32 @@ public class Client {
     @Override
     public String toString() {
 
-         String result = name + '\n' +
-                "From: " + payday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "\n" +
-                "To: " + lastday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+         StringBuilder result = new StringBuilder(name + '\n' +
+                 "From: " + payday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "\n" +
+                 "To: " + lastday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
 
-         if(lastday.isBefore(LocalDate.now())) result += "\n" + "(!)Time expired(!)";
+         if(lastday.isBefore(LocalDate.now())) result.append("\n" + "(!)Time expired(!)");
 
-         if(count >= 8) result += "\n" + "Count: " + count + "(!)";
-         else result += "\n" + "Count: " + count;
+         if(count >= 8) result.append("\n" + "Count: ").append(count).append("(!)");
+         else result.append("\n" + "Count: ").append(count);
 
          if(!phone.isEmpty())
-             result += "\n" + "Phone: " + phone;
+             result.append("\n" + "Phone: ").append(phone);
 
          if(!frequency.isEmpty()){
-             result += "\n\n" + "Frequency:  \n";
+             result.append("\n\n" + "Frequency:  \n");
 
              ArrayList<String> dates = new ArrayList<>(Arrays.asList(frequency.split(",")));
 
              dates.sort(Comparator.reverseOrder());
 
              for(String date : dates)
-                 result += date + "\n";
+                 result.append(date).append("\n");
 
          }
 
 
-        return result;
+        return result.toString();
     }
 
     public String getFrequency() {
