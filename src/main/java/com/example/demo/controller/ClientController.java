@@ -22,6 +22,10 @@ public class ClientController {
         return clientList;
     }
 
+    public List<Client> getAbsolutelyAll(){
+        return repository.getAll();
+    }
+
     public List<Client> paySoon() {
         return repository.paySoon();
     }

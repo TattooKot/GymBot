@@ -33,6 +33,9 @@ public class Bot extends TelegramLongPollingBot {
             if(request.contains("Delete")) {
                 send(view.notActive(update));
             }
+            if(request.contains("Get allall")) {
+                send(view.getAbsolutelyAll(update));
+            }
             if(request.matches("^\\d{1,2}$")) {
                 send(view.getById(update));
             }

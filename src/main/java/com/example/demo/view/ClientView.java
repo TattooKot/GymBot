@@ -126,6 +126,10 @@ public class ClientView {
         }
     }
 
+    public SendMessage getAbsolutelyAll(Update update){
+        return createResponseMessage(update, createStringForListOfClients(controller.getAbsolutelyAll()));
+    }
+
     public SendMessage bestFrau(Update update){
         return createResponseMessage(update, "You the best frau ever ;)");
     }
@@ -151,20 +155,24 @@ public class ClientView {
 
     private String createStringForListOfClients(List<Client> clientList){
         StringBuilder stringBuilder = new StringBuilder();
-        int id = 1;
 
         for(Client client : clientList) {
             if (client.getCount() >= 8) {
-                stringBuilder.append(String.format("%d.%s: %d(!)\n",
-                        id++, client.getName(), client.getCount()));
+                stringBuilder.append(String.format("%d.%s: %d(!)",
+                        client.getId(), client.getName(), client.getCount()));
 
             } else if (client.getLastday().minusDays(7).isBefore(LocalDate.now())) {
-                stringBuilder.append(String.format("%d.%s: %d(t)\n",
-                        id++, client.getName(), client.getCount()));
+                stringBuilder.append(String.format("%d.%s: %d(t)",
+                        client.getId(), client.getName(), client.getCount()));
             } else {
-                stringBuilder.append(String.format("%d.%s: %d\n",
-                        id++, client.getName(), client.getCount()));
+                stringBuilder.append(String.format("%d.%s: %d",
+                        client.getId(), client.getName(), client.getCount()));
             }
+
+            if(!client.isActive()){
+                stringBuilder.append("(N/A)");
+            }
+            stringBuilder.append("\n");
         }
 
         return stringBuilder.toString();

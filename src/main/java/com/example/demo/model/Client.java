@@ -44,7 +44,8 @@ public class Client {
 
          StringBuilder result = new StringBuilder(name + '\n' +
                  "From: " + payday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "\n" +
-                 "To: " + lastday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+                 "To: " + lastday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "\n" +
+                 "Active: " + active);
 
          if(lastday.isBefore(LocalDate.now())) {
              result.append("\n" + "(!)Time expired(!)");
