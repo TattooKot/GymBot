@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 import javax.persistence.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -41,27 +43,34 @@ public class Client {
                  "From: " + payday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "\n" +
                  "To: " + lastday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
 
-         if(lastday.isBefore(LocalDate.now())) result.append("\n" + "(!)Time expired(!)");
-
-         if(count >= 8) result.append("\n" + "Count: ").append(count).append("(!)");
-         else result.append("\n" + "Count: ").append(count);
-
-         if(!phone.isEmpty())
+         if(lastday.isBefore(LocalDate.now())) {
+             result.append("\n" + "(!)Time expired(!)");
+         }
+         if(count >= 8) {
+             result.append("\n" + "Count: ").append(count).append("(!)");
+         }
+         else {
+             result.append("\n" + "Count: ").append(count);
+         }
+         if(!phone.isEmpty()) {
              result.append("\n" + "Phone: ").append(phone);
-
+         }
          if(!frequency.isEmpty()){
              result.append("\n\n" + "Frequency:  \n");
 
              ArrayList<String> dates = new ArrayList<>(Arrays.asList(frequency.split(",")));
 
-             dates.sort(Comparator.reverseOrder());
 
-             for(String date : dates)
-                 result.append(date).append("\n");
-
+             dates.stream().map(d -> {
+                 try {
+                     return new SimpleDateFormat("dd.MM").parse(d);
+                 } catch (ParseException e) {
+                     e.printStackTrace();
+                 }
+                 return null;
+             }).sorted(Comparator.reverseOrder())
+                     .forEach(d -> result.append(new SimpleDateFormat("dd.MM").format(d)).append("\n"));
          }
-
-
         return result.toString();
     }
 
