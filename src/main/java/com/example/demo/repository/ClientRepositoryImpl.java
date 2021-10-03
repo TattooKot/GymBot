@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Client;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public class ClientRepositoryImpl {
 
     private final ClientRepository clientRepository;
 
-    public ClientRepositoryImpl(ClientRepository clientRepository) {
+    public ClientRepositoryImpl(@Lazy ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 

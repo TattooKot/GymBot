@@ -33,7 +33,6 @@ public class Bot extends TelegramLongPollingBot {
             if(request.equals("04k0"))
                 send(view.bestFrau(update));
 
-
         }
 
     }
