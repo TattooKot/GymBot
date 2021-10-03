@@ -1,15 +1,16 @@
-package com.example.demo;
+package com.example.demo.repository;
 
+import com.example.demo.model.Client;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public class ClientService {
+public class ClientRepositoryImpl {
 
     private final ClientRepository clientRepository;
 
-    public ClientService(ClientRepository clientRepository) {
+    public ClientRepositoryImpl(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 

@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.view.ClientView;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -9,32 +10,28 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Component
 public class Bot extends TelegramLongPollingBot {
 
-    private final ClientModel controller;
+    private final ClientView view;
 
-    public Bot(ClientModel controller) {
-        this.controller = controller;
+    public Bot(ClientView view) {
+        this.view = view;
     }
 
     @Override
     public void onUpdateReceived(Update update) {
         if(update.hasMessage() && update.getMessage().hasText()){
             String request = update.getMessage().getText();
-            String chatId = update.getMessage().getChatId().toString();
 
             if(request.equals("/get_all"))
-                send(controller.getAll(update));
+                send(view.getAll(update));
 
             if(request.toLowerCase().contains("id") || request.matches("^\\d{1,2}$"))
-                send(controller.getById(update));
+                send(view.getById(update));
 
-            if(request.toLowerCase().contains("add"))
-                send(controller.add(update));
-
-            if(request.matches("\\d{1,2}\\.\\d{2}.{0,}"))
-                send(controller.addVisit(update));
+            if(request.matches("\\d{1,2}\\.\\d{2}.*"))
+                send(view.addVisit(update));
 
             if(request.equals("04k0"))
-                send(controller.bestFrau(update));
+                send(view.bestFrau(update));
 
 
         }
