@@ -30,6 +30,9 @@ public class Bot extends TelegramLongPollingBot {
             if(request.contains("Add pay")) {
                 send(view.addPayment(update));
             }
+            if(request.contains("Delete")) {
+                send(view.notActive(update));
+            }
             if(request.matches("^\\d{1,2}$")) {
                 send(view.getById(update));
             }

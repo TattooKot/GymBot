@@ -24,7 +24,9 @@ public class ClientRepositoryImpl {
 
     public List<Client> paySoon(){
         List<Client> clientList = new ArrayList<>();
-        getAllInternal().forEach(c ->{
+        getAllInternal().stream()
+                .filter(c -> !c.isActive())
+                .forEach(c ->{
             if(c.getCount() >= 8 || (c.getLastday().minusDays(7).isBefore(LocalDate.now()))){
                 clientList.add(c);
             }
@@ -49,7 +51,4 @@ public class ClientRepositoryImpl {
         clientList.sort(Comparator.comparingInt(Client::getId));
         return clientList;
     }
-
-
-
 }

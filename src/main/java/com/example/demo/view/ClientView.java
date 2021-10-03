@@ -11,8 +11,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 @Component
@@ -44,8 +42,19 @@ public class ClientView {
         return createResponseMessage(update, controller.getById(id).toString());
     }
 
-    public SendMessage bestFrau(Update update){
-        return createResponseMessage(update, "You the best frau ever ;)");
+    public SendMessage notActive(Update update){
+        String request = update.getMessage().getText();
+
+        if(request.length() <= 7){
+            return createResponseMessage(update, "Щоб деактивувати користувача вкажіть його id");
+        }
+
+        int id = checkId(request.substring(7));
+        if(id == -1){
+            return createResponseMessage(update, "Неправильний id");
+        }
+        controller.notActive(id);
+        return createResponseMessage(update, id + " деактивовано");
     }
 
     public SendMessage addVisit(Update update) {
@@ -115,6 +124,10 @@ public class ClientView {
         } else {
             return createResponseMessage(update, "Помилка");
         }
+    }
+
+    public SendMessage bestFrau(Update update){
+        return createResponseMessage(update, "You the best frau ever ;)");
     }
 
     private SendMessage createResponseMessage(Update update, String text){

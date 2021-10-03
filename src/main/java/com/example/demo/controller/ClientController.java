@@ -17,7 +17,9 @@ public class ClientController {
     }
 
     public List<Client> getAll(){
-        return repository.getAll();
+        List<Client> clientList = repository.getAll();
+        clientList.removeIf(c -> !c.isActive());
+        return clientList;
     }
 
     public List<Client> paySoon() {
@@ -44,5 +46,10 @@ public class ClientController {
         return update(client);
     }
 
+    public void notActive(int id){
+        Client client = getById(id);
+        client.setActive(false);
+        update(client);
+    }
 
 }

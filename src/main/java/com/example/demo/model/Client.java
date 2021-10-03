@@ -35,6 +35,9 @@ public class Client {
     @Column(name = "frequency")
     private String frequency;
 
+    @Column(name = "active")
+    private boolean active;
+
 
     @Override
     public String toString() {
@@ -127,4 +130,11 @@ public class Client {
         return id;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }
