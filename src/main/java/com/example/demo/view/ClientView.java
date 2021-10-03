@@ -20,32 +20,17 @@ public class ClientView {
     }
 
     public SendMessage getAll(Update update){
-        StringBuilder stringBuilder = new StringBuilder();
+        List<Client> clientList = controller.getAll();
+        return createResponseMessage(update, createStringForListOfClients(clientList));
+    }
 
-        controller.getAll().forEach(client ->
-        {
-            if(client.getCount() >= 8){
-                stringBuilder.append(String.format("%d.%s: %d(!)",
-                                client.getId(),client.getName(), client.getCount()))
-                        .append("\n");
-            } else {
-                stringBuilder.append(String.format("%d.%s: %d",
-                                client.getId(),client.getName(), client.getCount()))
-                        .append("\n");
-            }});
-
-        return createResponseMessage(update, stringBuilder.toString());
+    public SendMessage paySoon(Update update){
+        List<Client> clientList = controller.paySoon();
+        return createResponseMessage(update, createStringForListOfClients(clientList));
     }
 
     public SendMessage getById(Update update){
         String request = update.getMessage().getText();
-
-        if(request.length() > 3 && request.length() <= 5) {
-            request = request.substring(3);
-        }
-        if(request.length() > 6) {
-            return createResponseMessage(update, "Щоб отримати інформацію, виконай команду id {id}");
-        }
         int id = checkId(request);
         if(id == -1){
             return createResponseMessage(update, "Id не знайдено, спробуй ще раз! \n");
@@ -113,5 +98,26 @@ public class ClientView {
             return -1;
         }
         return id;
+    }
+
+    private String createStringForListOfClients(List<Client> clientList){
+        StringBuilder stringBuilder = new StringBuilder();
+        int id = 1;
+
+        for(Client client : clientList) {
+            if (client.getCount() >= 8) {
+                stringBuilder.append(String.format("%d.%s: %d(!)\n",
+                        id++, client.getName(), client.getCount()));
+
+            } else if (client.getLastday().minusDays(7).isBefore(LocalDate.now())) {
+                stringBuilder.append(String.format("%d.%s: %d(t)\n",
+                        id++, client.getName(), client.getCount()));
+            } else {
+                stringBuilder.append(String.format("%d.%s: %d\n",
+                        id++, client.getName(), client.getCount()));
+            }
+        }
+
+        return stringBuilder.toString();
     }
 }

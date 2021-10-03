@@ -21,18 +21,21 @@ public class Bot extends TelegramLongPollingBot {
         if(update.hasMessage() && update.getMessage().hasText()){
             String request = update.getMessage().getText();
 
-            if(request.equals("/get_all"))
+            if(request.equals("/get_all")) {
                 send(view.getAll(update));
-
-            if(request.toLowerCase().contains("id") || request.matches("^\\d{1,2}$"))
+            }
+            if(request.equals("/pay_soon")) {
+                send(view.paySoon(update));
+            }
+            if(request.matches("^\\d{1,2}$")) {
                 send(view.getById(update));
-
-            if(request.matches("\\d{1,2}\\.\\d{2}.*"))
+            }
+            if(request.matches("\\d{1,2}\\.\\d{2}.*")) {
                 send(view.addVisit(update));
-
-            if(request.equals("04k0"))
+            }
+            if(request.equals("04k0")) {
                 send(view.bestFrau(update));
-
+            }
         }
 
     }

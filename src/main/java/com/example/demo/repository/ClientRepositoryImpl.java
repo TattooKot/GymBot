@@ -4,6 +4,9 @@ import com.example.demo.model.Client;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -16,7 +19,17 @@ public class ClientRepositoryImpl {
     }
 
     public List<Client> getAll(){
-        return clientRepository.findAll();
+        return getAllInternal();
+    }
+
+    public List<Client> paySoon(){
+        List<Client> clientList = new ArrayList<>();
+        getAllInternal().forEach(c ->{
+            if(c.getCount() >= 8 || (c.getLastday().minusDays(7).isBefore(LocalDate.now()))){
+                clientList.add(c);
+            }
+        });
+        return clientList;
     }
 
     public boolean checkById(int id){
@@ -30,5 +43,13 @@ public class ClientRepositoryImpl {
     public Client update(Client client){
         return clientRepository.save(client);
     }
+
+    private List<Client> getAllInternal(){
+        List<Client> clientList = clientRepository.findAll();
+        clientList.sort(Comparator.comparingInt(Client::getId));
+        return clientList;
+    }
+
+
 
 }
