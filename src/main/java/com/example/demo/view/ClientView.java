@@ -91,7 +91,7 @@ public class ClientView {
             }else result.append(controller.update(currentClient).getName()).append("(++)").append("\n");
         }
 
-        return createResponseMessage(update,result + "\n" + controller.getAll().toString());
+        return createResponseMessage(update,result + "\n" + createStringForListOfClients(controller.getAll()));
 
     }
 
