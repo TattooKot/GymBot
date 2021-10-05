@@ -45,7 +45,7 @@ public class ClientController {
     public Client addPayment(LocalDate payDay, int id){
         Client client = getById(id);
         client.setPayday(payDay);
-        client.setCount(0);
+        client.setCount(1);
         client.setFrequency(payDay.format(DateTimeFormatter.ofPattern("dd.MM"))+ "(payday)," + client.getFrequency());
         return update(client);
     }

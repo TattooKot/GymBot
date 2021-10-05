@@ -24,12 +24,12 @@ public class ClientView {
 
     public SendMessage getAll(Update update){
         List<Client> clientList = controller.getAll();
-        return createResponseMessage(update, createStringForListOfClients(clientList));
+        return createResponseMessage(update, createStringFromListOfClients(clientList));
     }
 
     public SendMessage paySoon(Update update){
         List<Client> clientList = controller.paySoon();
-        return createResponseMessage(update, createStringForListOfClients(clientList));
+        return createResponseMessage(update, createStringFromListOfClients(clientList));
     }
 
     public SendMessage getById(Update update){
@@ -91,7 +91,7 @@ public class ClientView {
             }else result.append(controller.update(currentClient).getName()).append("(++)").append("\n");
         }
 
-        return createResponseMessage(update,result + "\n" + createStringForListOfClients(controller.getAll()));
+        return createResponseMessage(update,result + "\n" + createStringFromListOfClients(controller.getAll()));
 
     }
 
@@ -127,7 +127,7 @@ public class ClientView {
     }
 
     public SendMessage getAbsolutelyAll(Update update){
-        return createResponseMessage(update, createStringForListOfClients(controller.getAbsolutelyAll()));
+        return createResponseMessage(update, createStringFromListOfClients(controller.getAbsolutelyAll()));
     }
 
     public SendMessage bestFrau(Update update){
@@ -153,7 +153,7 @@ public class ClientView {
         return id;
     }
 
-    private String createStringForListOfClients(List<Client> clientList){
+    private String createStringFromListOfClients(List<Client> clientList){
         StringBuilder stringBuilder = new StringBuilder();
 
         for(Client client : clientList) {
