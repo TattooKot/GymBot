@@ -56,4 +56,10 @@ public class ClientController {
         update(client);
     }
 
+    public void activeAgain(int id){
+        Client client = getById(id);
+        client.setActive(true);
+        update(client);
+    }
+
 }

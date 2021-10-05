@@ -30,14 +30,17 @@ public class Bot extends TelegramLongPollingBot {
             if(request.equals("/pay_soon")) {
                 send(view.paySoon(update));
             }
+            if(request.contains("/get_all_all")) {
+                send(view.getAbsolutelyAll(update));
+            }
             if(request.contains("Add pay")) {
                 send(view.addPayment(update));
             }
             if(request.contains("Delete")) {
                 send(view.notActive(update));
             }
-            if(request.contains("Get allall")) {
-                send(view.getAbsolutelyAll(update));
+            if(request.contains("Active")) {
+                send(view.activeAgain(update));
             }
             if(request.matches("^\\d{1,2}$")) {
                 send(view.getById(update));

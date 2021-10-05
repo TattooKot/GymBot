@@ -30,7 +30,8 @@ public class ClientView {
                 "{id} - get user by id" + "\n" +
                 "{date} {id..} - add visit" + "\n" +
                 "Add pay {date} {id} - add payment" + "\n" +
-                "Delete {id} - set active false" + "\n";
+                "Delete {id} - set active false" + "\n" +
+                "Active {id} - set active true" + "\n";
 
         return createResponseMessage(update, result);
     }
@@ -68,6 +69,21 @@ public class ClientView {
         }
         controller.notActive(id);
         return createResponseMessage(update, id + " деактивовано");
+    }
+
+    public SendMessage activeAgain(Update update){
+        String request = update.getMessage().getText();
+
+        if(request.length() <= 7){
+            return createResponseMessage(update, "Щоб активувати користувача вкажіть його id");
+        }
+
+        int id = checkId(request.substring(7));
+        if(id == -1){
+            return createResponseMessage(update, "Неправильний id");
+        }
+        controller.activeAgain(id);
+        return createResponseMessage(update, id + " активовано");
     }
 
     public SendMessage addVisit(Update update) {
