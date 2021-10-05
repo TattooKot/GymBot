@@ -21,6 +21,9 @@ public class Bot extends TelegramLongPollingBot {
         if(update.hasMessage() && update.getMessage().hasText()){
             String request = update.getMessage().getText();
 
+            if(request.equals("/start")) {
+                send(view.start(update));
+            }
             if(request.equals("/get_all")) {
                 send(view.getAll(update));
             }

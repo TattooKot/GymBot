@@ -22,6 +22,19 @@ public class ClientView {
         this.controller = controller;
     }
 
+    public SendMessage start(Update update){
+        String result = "All commands:\n" + "\n" +
+                "/get all - all active" + "\n" +
+                "Get allall - get all" + "\n" +
+                "/pay soon - pay soon" + "\n" +
+                "{id} - get user by id" + "\n" +
+                "{date} {id..} - add visit" + "\n" +
+                "Add pay {date} {id} - add payment" + "\n" +
+                "Delete {id} - set active false" + "\n";
+
+        return createResponseMessage(update, result);
+    }
+
     public SendMessage getAll(Update update){
         List<Client> clientList = controller.getAll();
         return createResponseMessage(update, createStringFromListOfClients(clientList));
