@@ -24,9 +24,9 @@ public class ClientView {
 
     public SendMessage start(Update update){
         String result = "All commands:\n" + "\n" +
-                "/get all - all active" + "\n" +
-                "Get allall - get all" + "\n" +
-                "/pay soon - pay soon" + "\n" +
+                "/get_all - all active" + "\n" +
+                "/get_all_all - get all" + "\n" +
+                "/pay_soon - pay soon" + "\n" +
                 "{id} - get user by id" + "\n" +
                 "{date} {id..} - add visit" + "\n" +
                 "Add pay {date} {id} - add payment" + "\n" +
@@ -91,36 +91,18 @@ public class ClientView {
         String date = request.substring(0,5);
 
         if(request.length() == 5)
-            return createResponseMessage(update, "Щоб додати візити вкажіть дату та індекси через ','  \n");
+            return createResponseMessage(update, "Щоб додати візити вкажіть дату та індекси через ' '  \n");
 
         List<String> clients = List.of(request.substring(6).split(" "));
-        StringBuilder result = new StringBuilder(date + "\n");
 
         for(String client : clients){
             int id = checkId(client);
             if(id == -1){
-                return createResponseMessage(update, "Неправильний Id");
+                return createResponseMessage(update, "Неправильний Id: " + id);
             }
-
-            Client currentClient = controller.getById(id);
-
-            if(!currentClient.getFrequency().contains(date)) {
-                if(currentClient.getCount() == 10) {
-                    currentClient.setFrequency(date + "(!)," + currentClient.getFrequency());
-                    currentClient.setCount(1);
-                    currentClient.setName(currentClient.getName() + "(!)");
-                    currentClient.setPayday(LocalDate.now());
-                }
-                else {
-                    currentClient.setFrequency(date + "," + currentClient.getFrequency());
-                    currentClient.setCount(currentClient.getCount() + 1);
-                }
-
-                result.append(controller.update(currentClient).getName()).append("\n");
-            }else result.append(controller.update(currentClient).getName()).append("(++)").append("\n");
         }
-
-        return createResponseMessage(update,result + "\n" + createStringFromListOfClients(controller.getAll()));
+        return createResponseMessage(update,controller.addVisit(clients, date)
+                + "\n" + createStringFromListOfClients(controller.getAll()));
 
     }
 

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ClientController {
@@ -40,6 +41,33 @@ public class ClientController {
 
     public Client update(Client client) {
         return repository.update(client);
+    }
+
+    public String addVisit(List<String> stringIdList, String date){
+        List<Client> numIdList = stringIdList.stream()
+                .map(Integer::parseInt)
+                .map(this::getById)
+                .collect(Collectors.toList());
+
+        StringBuilder result = new StringBuilder(date + "\n");
+
+        for(Client currentClient : numIdList) {
+
+            if (!currentClient.getFrequency().contains(date)) {
+                if (currentClient.getCount() == 10) {
+                    currentClient.setFrequency(date + "(!)," + currentClient.getFrequency());
+                    currentClient.setCount(1);
+                    currentClient.setName(currentClient.getName() + "(!)");
+                    currentClient.setPayday(LocalDate.now());
+                } else {
+                    currentClient.setFrequency(date + "," + currentClient.getFrequency());
+                    currentClient.setCount(currentClient.getCount() + 1);
+                }
+
+                result.append(update(currentClient).getName()).append("\n");
+            } else result.append(update(currentClient).getName()).append("(++)").append("\n");
+        }
+        return result.toString();
     }
     
     public Client addPayment(LocalDate payDay, int id){
