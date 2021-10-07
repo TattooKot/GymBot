@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.view.ClientView;
+import com.example.demo.view.CreateNewClientView;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -11,9 +12,11 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class Bot extends TelegramLongPollingBot {
 
     private final ClientView view;
+    private final CreateNewClientView createView;
 
-    public Bot(ClientView view) {
+    public Bot(ClientView view, CreateNewClientView createView) {
         this.view = view;
+        this.createView = createView;
     }
 
     @Override
@@ -21,6 +24,13 @@ public class Bot extends TelegramLongPollingBot {
         if(update.hasMessage() && update.getMessage().hasText()){
             String request = update.getMessage().getText();
 
+            if(createView.isWantCreate()){
+                send(createView.process(update));
+                return;
+            }
+            if(request.equals("/create")) {
+                send(createView.createNew(update));
+            }
             if(request.equals("/start")) {
                 send(view.start(update));
             }

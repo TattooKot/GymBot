@@ -35,6 +35,10 @@ public class ClientController {
         return repository.checkById(id);
     }
 
+    public Client createNew(Client client){
+        return repository.create(client);
+    }
+
     public Client getById(int id){
         return repository.getById(id);
     }

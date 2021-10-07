@@ -26,6 +26,7 @@ public class ClientView {
         String result = "All commands:\n" + "\n" +
                 "/get_all - all active" + "\n" +
                 "/get_all_all - get all" + "\n" +
+                "/create - create new client" + "\n" +
                 "/pay_soon - pay soon" + "\n" +
                 "{id} - get user by id" + "\n" +
                 "{date} {id..} - add visit" + "\n" +

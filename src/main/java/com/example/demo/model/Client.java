@@ -38,6 +38,15 @@ public class Client {
     @Column(name = "active")
     private boolean active;
 
+    public Client() {
+        this.name = "";
+        this.payday = LocalDate.parse(("01.01.1970"), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        this.lastday = LocalDate.parse(("01.01.1970"), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        this.active = true;
+        this.count = 0;
+        this.frequency = "";
+        this.phone = "";
+    }
 
     @Override
     public String toString() {

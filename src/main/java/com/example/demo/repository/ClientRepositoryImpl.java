@@ -34,6 +34,10 @@ public class ClientRepositoryImpl {
         return clientList;
     }
 
+    public Client create (Client client){
+        return clientRepository.save(client);
+    }
+
     public boolean checkById(int id){
         return clientRepository.existsById(id);
     }
