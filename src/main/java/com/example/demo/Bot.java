@@ -34,6 +34,9 @@ public class Bot extends TelegramLongPollingBot {
             if(request.equals("/start")) {
                 send(view.start(update));
             }
+            if(request.contains("/delete")) {
+                send(view.deleteById(update));
+            }
             if(request.equals("/get_all")) {
                 send(view.getAll(update));
             }

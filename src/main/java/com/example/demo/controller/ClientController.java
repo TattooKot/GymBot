@@ -35,12 +35,12 @@ public class ClientController {
         return repository.checkById(id);
     }
 
-    public Client createNew(Client client){
-        return repository.create(client);
-    }
-
     public Client getById(int id){
         return repository.getById(id);
+    }
+
+    public Client createNew(Client client){
+        return repository.create(client);
     }
 
     public Client update(Client client) {
@@ -92,6 +92,10 @@ public class ClientController {
         Client client = getById(id);
         client.setActive(true);
         update(client);
+    }
+
+    public void deleteById(int id){
+        repository.deleteById(id);
     }
 
 }

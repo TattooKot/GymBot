@@ -26,8 +26,9 @@ public class ClientView {
         String result = "All commands:\n" + "\n" +
                 "/get_all - all active" + "\n" +
                 "/get_all_all - get all" + "\n" +
-                "/create - create new client" + "\n" +
                 "/pay_soon - pay soon" + "\n" +
+                "/create - create new client" + "\n" +
+                "/delete {id} - delete by id" + "\n" +
                 "{id} - get user by id" + "\n" +
                 "{date} {id..} - add visit" + "\n" +
                 "Add pay {date} {id} - add payment" + "\n" +
@@ -140,6 +141,16 @@ public class ClientView {
 
     public SendMessage getAbsolutelyAll(Update update){
         return createResponseMessage(update, createStringFromListOfClients(controller.getAbsolutelyAll()));
+    }
+
+    public SendMessage deleteById(Update update){
+        String data = update.getMessage().getText().substring(8);
+        int id = checkId(data);
+        if(id == -1){
+            return createResponseMessage(update, "Неправильний id");
+        }
+        controller.deleteById(id);
+        return createResponseMessage(update, "Користувач видалений: " + id);
     }
 
     public SendMessage bestFrau(Update update){

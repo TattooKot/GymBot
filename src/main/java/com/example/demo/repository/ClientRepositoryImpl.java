@@ -34,12 +34,12 @@ public class ClientRepositoryImpl {
         return clientList;
     }
 
-    public Client create (Client client){
-        return clientRepository.save(client);
-    }
-
     public boolean checkById(int id){
         return clientRepository.existsById(id);
+    }
+
+    public Client create (Client client){
+        return clientRepository.save(client);
     }
 
     public Client getById(int id){
@@ -48,6 +48,10 @@ public class ClientRepositoryImpl {
 
     public Client update(Client client){
         return clientRepository.save(client);
+    }
+
+    public void deleteById(int id){
+        clientRepository.deleteById(id);
     }
 
     private List<Client> getAllInternal(){
