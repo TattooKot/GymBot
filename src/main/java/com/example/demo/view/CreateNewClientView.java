@@ -36,13 +36,15 @@ public class CreateNewClientView {
                     + "\nEnter phone: ");
         }
         if(!phoneAdded){
-            if(!data.matches("^\\d{10}$")){
+            if(data.equals("-")){
+                phoneAdded = true;
+            }else if(!data.matches("^\\d{10}$")){
                 return createResponseMessage(update, "Phone has only 10 numbers");
             }else {
                 client.setPhone(data);
                 phoneAdded = true;
-                return createResponseMessage(update, "Phone added\nIs payday today?(+/-)");
             }
+            return createResponseMessage(update, "Phone added\nIs payday today?(+/-)");
         }
         done();
         if(data.equals("+")){
