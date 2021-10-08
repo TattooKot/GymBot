@@ -86,9 +86,7 @@ public class ClientController {
                     currentClient.setCount(currentClient.getCount() + 1);
                 }
 
-                if(currentClient.getCount() != 0){
-                    sendToUsersInfoBot(currentClient, "Тренування " + date + " закінчено! Машина, йомайо!");
-                }
+                sendToUsersInfoBot(currentClient, "Тренування " + date + " закінчено! Машина, йомайо!");
                 result.append(update(currentClient).getName()).append("\n");
             } else result.append(update(currentClient).getName()).append("(++)").append("\n");
         }
@@ -100,6 +98,11 @@ public class ClientController {
         client.setPayday(payDay);
         client.setCount(1);
         client.setFrequency(payDay.format(DateTimeFormatter.ofPattern("dd.MM"))+ "(payday)," + client.getFrequency());
+
+        sendToUsersInfoBot(client, "Додано 10 тренувань!\nНагадую, що ренування дійсні\n" +
+                "Від: " +payDay.format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
+                "До: " + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM")));
+
         return update(client);
     }
 
@@ -120,6 +123,9 @@ public class ClientController {
     }
 
     public void sendToUsersInfoBot(Client client, String text){
+        if(client.getChatid() == 0){
+            return;
+        }
         userInfoBot.messageToUser(client.getChatid(), text);
     }
 
