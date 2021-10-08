@@ -63,7 +63,7 @@ public class UserInfoView {
 
     public SendMessage reset(Update update){
         int chatId = Integer.parseInt(update.getMessage().getChatId().toString());
-        if(!checkChatId(chatId)){
+        if(checkChatId(chatId)){
             return createResponseMessage(update, "ChatId does not exist");
         }
         Client client = controller.getByChatId(chatId);
