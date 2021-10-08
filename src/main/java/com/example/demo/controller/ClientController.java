@@ -98,7 +98,9 @@ public class ClientController {
         client.setPayday(payDay);
         client.setCount(1);
         client.setFrequency(payDay.format(DateTimeFormatter.ofPattern("dd.MM"))+ "(payday)," + client.getFrequency());
-
+        if(client.getName().contains("(!)")){
+            client.setName(client.getName().replace("(!)", ""));
+        }
         sendToUsersInfoBot(client, "Додано 10 тренувань!\nНагадую, що тренування дійсні\n" +
                 "Від: " +payDay.format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
                 "До: " + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM")));

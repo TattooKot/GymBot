@@ -27,7 +27,7 @@ public class ClientRepositoryImpl {
         getAllInternal().stream()
                 .filter(Client::isActive)
                 .forEach(c ->{
-            if(c.getCount() >= 8 || (c.getLastday().minusDays(7).isBefore(LocalDate.now()))){
+            if(c.getCount() >= 8 || (c.getLastday().minusDays(7).isBefore(LocalDate.now())) || c.getName().contains("!")){
                 clientList.add(c);
             }
         });
