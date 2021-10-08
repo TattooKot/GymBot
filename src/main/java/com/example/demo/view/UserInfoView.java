@@ -11,10 +11,16 @@ import java.util.Objects;
 @Component
 public class UserInfoView {
 
-    private final ClientController clientController;
+    private final ClientController controller;
 
     public UserInfoView(ClientController clientController) {
-        this.clientController = clientController;
+        this.controller = clientController;
+    }
+
+    public SendMessage help(Update update) {
+        String text = "/reset - reset chatId\n" +
+                "/sho_tam - get info by chat id";
+        return createResponseMessage(update, text);
     }
 
     public SendMessage start(Update update) {
@@ -33,13 +39,13 @@ public class UserInfoView {
                     "Спробуй ще раз");
         }
 
-        Client client = clientController.getByPhone(phone);
+        Client client = controller.getByPhone(phone);
 
         if(chatIdPresent(client)){
             return createResponseMessage(update, "Користувач з цим номером телефону вже зараєструвався");
         }
         client.setChatid(id);
-        clientController.update(client);
+        controller.update(client);
 
         return createResponseMessage(update, "Окей, тепер все добре, нічого не болить, не тягне," +
                 " і можна спробувати отримати інформацію по тренуванням.\n" +
@@ -52,7 +58,7 @@ public class UserInfoView {
             return createResponseMessage(update, "Не поспішай!\n" +
                     "Щоб розпочати роботу з ботом, введи свій номер телефону в форматі '0500000000'");
         }
-        return createResponseMessage(update, clientController.getByChatId(chatId).toString());
+        return createResponseMessage(update, controller.getByChatId(chatId).toString());
     }
 
     public SendMessage reset(Update update){
@@ -60,9 +66,9 @@ public class UserInfoView {
         if(!checkChatId(chatId)){
             return createResponseMessage(update, "ChatId does not exist");
         }
-        Client client = clientController.getByChatId(chatId);
+        Client client = controller.getByChatId(chatId);
         client.setChatid(0);
-        clientController.update(client);
+        controller.update(client);
         return createResponseMessage(update, "ChatId reset completed");
     }
 
@@ -75,7 +81,7 @@ public class UserInfoView {
     }
 
     private boolean checkPhone(String phone){
-        Client client = clientController.getAbsolutelyAll().stream()
+        Client client = controller.getAbsolutelyAll().stream()
                 .filter(n -> n.getPhone().equals(phone))
                 .findFirst()
                 .orElse(null);
@@ -83,7 +89,7 @@ public class UserInfoView {
     }
 
     private boolean checkChatId(int id){
-        Client client = clientController.getAbsolutelyAll().stream()
+        Client client = controller.getAbsolutelyAll().stream()
                 .filter(n -> n.getChatid() == id)
                 .findFirst()
                 .orElse(null);
@@ -93,4 +99,5 @@ public class UserInfoView {
     private boolean chatIdPresent(Client client){
         return client.getChatid() != 0;
     }
+
 }

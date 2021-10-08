@@ -33,6 +33,9 @@ public class UserInfoBot extends TelegramLongPollingBot {
             if(request.equals("/reset")){
                 send(view.reset(update));
             }
+            if(request.equals("/help")){
+                send(view.help(update));
+            }
         }
 
     }
