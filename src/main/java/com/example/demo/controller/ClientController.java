@@ -99,7 +99,7 @@ public class ClientController {
         client.setCount(1);
         client.setFrequency(payDay.format(DateTimeFormatter.ofPattern("dd.MM"))+ "(payday)," + client.getFrequency());
 
-        sendToUsersInfoBot(client, "Додано 10 тренувань!\nНагадую, що ренування дійсні\n" +
+        sendToUsersInfoBot(client, "Додано 10 тренувань!\nНагадую, що тренування дійсні\n" +
                 "Від: " +payDay.format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
                 "До: " + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM")));
 
@@ -127,6 +127,12 @@ public class ClientController {
             return;
         }
         userInfoBot.messageToUser(client.getChatid(), text);
+    }
+
+    public void sendToAllUsers(String text){
+        getAll().stream()
+                .filter(c -> !c.getChatid().equals(0))
+                .forEach(c -> sendToUsersInfoBot(c,text));
     }
 
 }

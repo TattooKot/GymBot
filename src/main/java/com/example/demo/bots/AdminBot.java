@@ -64,6 +64,9 @@ public class AdminBot extends TelegramLongPollingBot {
             if(request.equals("04k0")) {
                 send(view.bestFrau(update));
             }
+            if(request.contains("/send")){
+                send(view.sendToAllUsers(update));
+            }
         }
 
     }

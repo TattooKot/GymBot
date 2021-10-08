@@ -29,6 +29,7 @@ public class ClientView {
                 "/pay_soon - pay soon" + "\n" +
                 "/create - create new client" + "\n" +
                 "/delete {id} - delete by id" + "\n" +
+                "/send {text} - send all" + "\n" +
                 "{id} - get user by id" + "\n" +
                 "{date} {id..} - add visit" + "\n" +
                 "Add pay {date} {id} - add payment" + "\n" +
@@ -151,6 +152,17 @@ public class ClientView {
         }
         controller.deleteById(id);
         return createResponseMessage(update, "Користувач видалений: " + id);
+    }
+
+    public SendMessage sendToAllUsers(Update update){
+        String text = update.getMessage().getText().trim();
+        if(text.equals("/send")){
+            return createResponseMessage(update, "Після /send напиши повідомлення");
+        }
+        text = text.replace("/send", "").trim();
+
+        controller.sendToAllUsers(text);
+        return createResponseMessage(update, "Повідомлення надіслано");
     }
 
     public SendMessage bestFrau(Update update){
