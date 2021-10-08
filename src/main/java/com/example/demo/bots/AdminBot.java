@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.bots;
 
 import com.example.demo.view.ClientView;
 import com.example.demo.view.CreateNewClientView;
@@ -9,12 +9,12 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
-public class Bot extends TelegramLongPollingBot {
+public class AdminBot extends TelegramLongPollingBot {
 
     private final ClientView view;
     private final CreateNewClientView createView;
 
-    public Bot(ClientView view, CreateNewClientView createView) {
+    public AdminBot(ClientView view, CreateNewClientView createView) {
         this.view = view;
         this.createView = createView;
     }
