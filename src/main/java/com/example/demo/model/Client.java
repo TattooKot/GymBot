@@ -55,25 +55,31 @@ public class Client {
     @Override
     public String toString() {
 
-         StringBuilder result = new StringBuilder(name + '\n' +
-                 "From: " + payday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "\n" +
-                 "To: " + lastday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + "\n" +
-                 "Active: " + active);
+         StringBuilder result = new StringBuilder(name);
+
+        if(!phone.isEmpty()) {
+            result.append("\n" + "Телефон: ").append(phone);
+        }
+
+        result.append("\n\nОплата: ")
+                .append(payday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
+                .append("\n")
+                .append("До: ")
+                .append(lastday.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
 
          if(lastday.isBefore(LocalDate.now())) {
-             result.append("\n" + "(!)Time expired(!)");
+             result.append("\n" + "(!)Час вийшов(!)");
          }
+
          if(count >= 8) {
-             result.append("\n" + "Count: ").append(count).append("(!)");
+             result.append("\n" + "К-сть: ").append(count).append("(!)");
+         } else {
+             result.append("\n" + "К-сть: ").append(count);
          }
-         else {
-             result.append("\n" + "Count: ").append(count);
-         }
-         if(!phone.isEmpty()) {
-             result.append("\n" + "Phone: ").append(phone);
-         }
+
+
          if(!frequency.isEmpty()){
-             result.append("\n\n" + "Frequency:  \n");
+             result.append("\n\n" + "Відвідування:  \n");
 
              ArrayList<String> dates = new ArrayList<>(Arrays.asList(frequency.split(",")));
 

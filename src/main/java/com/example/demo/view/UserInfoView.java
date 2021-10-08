@@ -48,7 +48,7 @@ public class UserInfoView {
 
     public SendMessage info(Update update){
         int chatId = Integer.parseInt(update.getMessage().getChatId().toString());
-        if(!checkChatId(chatId)){
+        if(checkChatId(chatId)){
             return createResponseMessage(update, "Не поспішай!\n" +
                     "Щоб розпочати роботу з ботом, введи свій номер телефону в форматі '0500000000'");
         }
@@ -87,7 +87,7 @@ public class UserInfoView {
                 .filter(n -> n.getChatid() == id)
                 .findFirst()
                 .orElse(null);
-        return Objects.nonNull(client);
+        return Objects.isNull(client);
     }
 
     private boolean chatIdPresent(Client client){
