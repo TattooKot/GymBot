@@ -30,6 +30,9 @@ public class UserInfoBot extends TelegramLongPollingBot {
             if(request.equals("/sho_tam")){
                 send(view.info(update));
             }
+            if(request.equals("/reset")){
+                send(view.reset(update));
+            }
         }
 
     }

@@ -47,12 +47,23 @@ public class UserInfoView {
     }
 
     public SendMessage info(Update update){
-        int id = Integer.parseInt(update.getMessage().getChatId().toString());
-        if(!checkChatId(id)){
+        int chatId = Integer.parseInt(update.getMessage().getChatId().toString());
+        if(!checkChatId(chatId)){
             return createResponseMessage(update, "Не поспішай!\n" +
                     "Щоб розпочати роботу з ботом, введи свій номер телефону в форматі '0500000000'");
         }
-        return createResponseMessage(update, clientController.getByChatId(id).toString());
+        return createResponseMessage(update, clientController.getByChatId(chatId).toString());
+    }
+
+    public SendMessage reset(Update update){
+        int chatId = Integer.parseInt(update.getMessage().getChatId().toString());
+        if(!checkChatId(chatId)){
+            return createResponseMessage(update, "ChatId does not exist");
+        }
+        Client client = clientController.getByChatId(chatId);
+        client.setChatid(0);
+        clientController.update(client);
+        return createResponseMessage(update, "ChatId reset completed");
     }
 
     private SendMessage createResponseMessage(Update update, String text){
