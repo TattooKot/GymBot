@@ -21,8 +21,14 @@ public class UserInfoBot extends TelegramLongPollingBot {
         if(update.hasMessage() && update.getMessage().hasText()){
             String request = update.getMessage().getText();
 
+            if(request.equals("/start")){
+                send(view.start(update));
+            }
             if(request.matches("^\\d{10}$")){
                 send(view.connect(update));
+            }
+            if(request.equals("/sho_tam")){
+                send(view.info(update));
             }
         }
 

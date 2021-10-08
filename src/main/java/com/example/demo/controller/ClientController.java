@@ -39,6 +39,20 @@ public class ClientController {
         return repository.getById(id);
     }
 
+    public Client getByPhone(String phone){
+        return getAbsolutelyAll().stream()
+                .filter(c -> c.getPhone().equals(phone))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public Client getByChatId(Integer chatId){
+        return getAbsolutelyAll().stream()
+                .filter(c -> c.getChatid().equals(chatId))
+                .findFirst()
+                .orElse(null);
+    }
+
     public Client createNew(Client client){
         return repository.create(client);
     }

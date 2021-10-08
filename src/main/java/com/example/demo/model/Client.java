@@ -38,8 +38,8 @@ public class Client {
     @Column(name = "active")
     private boolean active;
 
-    @Column(name = "chatId")
-    private Integer chatId;
+    @Column(name = "chatid")
+    private Integer chatid;
 
     public Client() {
         this.name = "";
@@ -49,6 +49,7 @@ public class Client {
         this.count = 0;
         this.frequency = "";
         this.phone = "";
+        this.chatid = 0;
     }
 
     @Override
@@ -90,12 +91,12 @@ public class Client {
         return result.toString();
     }
 
-    public Integer getChatId() {
-        return chatId;
+    public Integer getChatid() {
+        return chatid;
     }
 
-    public void setChatId(Integer chatId) {
-        this.chatId = chatId;
+    public void setChatid(Integer chatId) {
+        this.chatid = chatId;
     }
 
     public String getFrequency() {
