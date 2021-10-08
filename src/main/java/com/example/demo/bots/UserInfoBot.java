@@ -37,6 +37,11 @@ public class UserInfoBot extends TelegramLongPollingBot {
 
     }
 
+    public void messageToUser(int chatId, String text){
+        SendMessage message = new SendMessage(String.valueOf(chatId), text);
+        send(message);
+    }
+
     public void send(SendMessage message){
         try {
             execute(message);
@@ -44,7 +49,6 @@ public class UserInfoBot extends TelegramLongPollingBot {
             e.printStackTrace();
         }
     }
-
 
     @Override
     public String getBotUsername() {

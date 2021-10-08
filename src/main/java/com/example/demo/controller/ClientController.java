@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
+import com.example.demo.bots.UserInfoBot;
 import com.example.demo.model.Client;
 import com.example.demo.repository.ClientRepositoryImpl;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -12,9 +14,11 @@ import java.util.stream.Collectors;
 @Component
 public class ClientController {
     private final ClientRepositoryImpl repository;
+    private final UserInfoBot userInfoBot;
 
-    public ClientController(ClientRepositoryImpl repository) {
+    public ClientController(@Lazy ClientRepositoryImpl repository, @Lazy UserInfoBot userInfoBot) {
         this.repository = repository;
+        this.userInfoBot = userInfoBot;
     }
 
     public List<Client> getAll(){
@@ -62,14 +66,14 @@ public class ClientController {
     }
 
     public String addVisit(List<String> stringIdList, String date){
-        List<Client> numIdList = stringIdList.stream()
+        List<Client> clientList = stringIdList.stream()
                 .map(Integer::parseInt)
                 .map(this::getById)
                 .collect(Collectors.toList());
 
         StringBuilder result = new StringBuilder(date + "\n");
 
-        for(Client currentClient : numIdList) {
+        for(Client currentClient : clientList) {
 
             if (!currentClient.getFrequency().contains(date)) {
                 if (currentClient.getCount() == 10) {
@@ -82,6 +86,9 @@ public class ClientController {
                     currentClient.setCount(currentClient.getCount() + 1);
                 }
 
+                if(currentClient.getCount() != 0){
+                    sendToUsersInfoBot(currentClient, "Тренування " + date + " закінчено! Машина, йомайо!");
+                }
                 result.append(update(currentClient).getName()).append("\n");
             } else result.append(update(currentClient).getName()).append("(++)").append("\n");
         }
@@ -110,6 +117,10 @@ public class ClientController {
 
     public void deleteById(int id){
         repository.deleteById(id);
+    }
+
+    public void sendToUsersInfoBot(Client client, String text){
+        userInfoBot.messageToUser(client.getChatid(), text);
     }
 
 }
