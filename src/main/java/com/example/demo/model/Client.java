@@ -38,6 +38,9 @@ public class Client {
     @Column(name = "active")
     private boolean active;
 
+    @Column(name = "chatId")
+    private Integer chatId;
+
     public Client() {
         this.name = "";
         this.payday = LocalDate.parse(("01.01.1970"), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
@@ -85,6 +88,14 @@ public class Client {
                      .forEach(d -> result.append(new SimpleDateFormat("dd.MM").format(d)).append("\n"));
          }
         return result.toString();
+    }
+
+    public Integer getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(Integer chatId) {
+        this.chatId = chatId;
     }
 
     public String getFrequency() {
