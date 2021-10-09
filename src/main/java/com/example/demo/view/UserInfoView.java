@@ -24,6 +24,11 @@ public class UserInfoView {
     }
 
     public SendMessage start(Update update) {
+        int chatId = Integer.parseInt(update.getMessage().getChatId().toString());
+        if(!checkChatId(chatId)){
+            return createResponseMessage(update, "Для чого знову старт? Все ж уже працює");
+        }
+
         String text =
                 "Хелоу! Їв? Спав?\n" +
                         "Щоб розпочати роботу з ботом, введи свій номер телефону в форматі '0500000000'";
