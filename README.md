@@ -1,6 +1,6 @@
 # GymBot
 ## Here we have two telegram bots, connected with each other
-### Two Telegram bots, written on java(crud application), with using:</br>
+### Two Telegram bots, written on java(CRUD application), with using:</br>
 1.Telegram Bot Api</br>
 2.Maven</br>
 3.SpringBoot</br>
@@ -13,7 +13,7 @@ I'm using this bot like **admin panel**, where I can change, add, remove, some i
 Also, from admin bot I can **send notifications to all customers, who used UserBot.**</br>
 So if something goes wrong, and the gym been closed today, all customers know about it from their bots. 
 </br>
-**AdminBot** — it's a regular crud application.
+**AdminBot** — it's a regular CRUD application.
 </br>
 </br>
 ## UserBot
@@ -23,4 +23,3 @@ So I decided to write a bot for customers.</br>
 Each customer can read information only about one person, so no one can saw information about other customers</br>
 This bot can only send notifications for customers, and give information about each of customer who used them.</br>
 Customer can use command **/sho_tam**, and bot gives customer all information about this customer from db.
-
