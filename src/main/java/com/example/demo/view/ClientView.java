@@ -30,6 +30,7 @@ public class ClientView {
                 "/create - create new client" + "\n" +
                 "/delete {id} - delete by id" + "\n" +
                 "/send {text} - send all" + "\n" +
+                "/allConnected - all connected to bot" + "\n" +
                 "{id} - get user by id" + "\n" +
                 "{date} {id..} - add visit" + "\n" +
                 "Add pay {date} {id} - add payment" + "\n" +
@@ -152,6 +153,10 @@ public class ClientView {
         }
         controller.deleteById(id);
         return createResponseMessage(update, "Користувач видалений: " + id);
+    }
+
+    public SendMessage allConnectedToBot(Update update){
+        return createResponseMessage(update, createStringFromListOfClients(controller.allConnectedToBot()));
     }
 
     public SendMessage sendToAllUsers(Update update){

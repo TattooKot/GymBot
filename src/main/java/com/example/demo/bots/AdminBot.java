@@ -67,6 +67,9 @@ public class AdminBot extends TelegramLongPollingBot {
             if(request.contains("/send")){
                 send(view.sendToAllUsers(update));
             }
+            if(request.equals("/allConnected")){
+                send(view.allConnectedToBot(update));
+            }
         }
 
     }

@@ -35,6 +35,12 @@ public class ClientController {
         return repository.paySoon();
     }
 
+    public List<Client> allConnectedToBot(){
+        return getAbsolutelyAll().stream()
+                .filter(c -> c.getChatid() != 0)
+                .collect(Collectors.toList());
+    }
+
     public boolean checkById(int id){
         return repository.checkById(id);
     }
