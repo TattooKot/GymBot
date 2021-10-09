@@ -86,7 +86,8 @@ public class ClientController {
                     currentClient.setCount(currentClient.getCount() + 1);
                 }
 
-                sendToUsersInfoBot(currentClient, "Тренування " + date + " закінчено! Машина, йомайо!");
+                sendToUsersInfoBot(currentClient, "Тренування " + date + " закінчено! \uD83D\uDE0E\n" +
+                        "Машина, йомайо! \uD83D\uDE04");
                 result.append(update(currentClient).getName()).append("\n");
             } else result.append(update(currentClient).getName()).append("(++)").append("\n");
         }
@@ -99,7 +100,8 @@ public class ClientController {
         //if trainings started already
         if(client.getName().contains("(!)")){
             client.setName(client.getName().replace("(!)", ""));
-            sendToUsersInfoBot(client, "Додано 10 тренувань!\nНагадую, що тренування дійсні\n" +
+            sendToUsersInfoBot(client, "❗Додано 10 тренувань❗\n" +
+                    "Нагадую що тренування дійсні\n" +
                     "Від: " +client.getPayday().format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
                     "До: " + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM")));
             return update(client);
@@ -109,7 +111,7 @@ public class ClientController {
         client.setPayday(payDay);
         client.setCount(1);
         client.setFrequency(payDay.format(DateTimeFormatter.ofPattern("dd.MM"))+ "(payday)," + client.getFrequency());
-        sendToUsersInfoBot(client, "Додано 10 тренувань!\nНагадую, що тренування дійсні\n" +
+        sendToUsersInfoBot(client, "❗Додано 10 тренувань❗\nНагадую, що тренування дійсні\n" +
                 "Від: " +payDay.format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
                 "До: " + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM")));
 

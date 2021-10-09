@@ -26,12 +26,14 @@ public class UserInfoView {
     public SendMessage start(Update update) {
         int chatId = Integer.parseInt(update.getMessage().getChatId().toString());
         if(!checkChatId(chatId)){
-            return createResponseMessage(update, "Для чого знову старт? Все ж уже працює");
+            return createResponseMessage(update, "Для чого знову /start?\uD83E\uDD14\n" +
+                    "Все ж уже працює\uD83D\uDE43");
         }
 
         String text =
-                "Хелоу! Їв? Спав?\n" +
-                        "Щоб розпочати роботу з ботом, введи свій номер телефону в форматі '0500000000'";
+                "Хелоу! \uD83D\uDE09\uD83E\uDD1C\uD83C\uDFFB\uD83E\uDD1B\uD83C\uDFFB\n" +
+                        "Ага, замість того щоб Їсти/спати, хтось сидить в інтернетах \uD83D\uDE09\uD83D\uDE04\n" +
+                        "Щоб розпочати роботу з ботом, введи свій номер телефону в форматі -> 0500000000";
         return createResponseMessage(update, text);
     }
 
@@ -40,28 +42,44 @@ public class UserInfoView {
         int id = Integer.parseInt(update.getMessage().getChatId().toString());
 
         if(!checkPhone(phone)){
-            return createResponseMessage(update, "Номер телефону не закріплений ні за ким в залі:(\n " +
-                    "Спробуй ще раз");
+            return createResponseMessage(update, "Номер телефону не закріплений ні за ким в залі\uD83D\uDE35\n" +
+                    "Спробуй ще раз\uD83D\uDE43");
         }
 
         Client client = controller.getByPhone(phone);
 
         if(chatIdPresent(client)){
-            return createResponseMessage(update, "Користувач з цим номером телефону вже зараєструвався");
+            return createResponseMessage(update, "Користувач з цим номером телефону вже зареєєструвався\uD83E\uDDD0");
         }
         client.setChatid(id);
         controller.update(client);
 
-        return createResponseMessage(update, "Окей, тепер все добре, нічого не болить, не тягне," +
-                " і можна спробувати отримати інформацію по тренуванням.\n" +
-                "-> /sho_tam");
+        return createResponseMessage(update, "Є контакт \uD83D\uDE0A\n" +
+                "\n" +
+                "В цей бот будуть приходити:\n" +
+                "-Сповіщення про відвідування\uD83C\uDFC3\u200D♂️\n" +
+                "-Сповіщення про додавання нових тренувань\uD83D\uDE0E\n" +
+                "-Нагадування про закінчення тренувань\uD83D\uDE23\n" +
+                "-Важливі повідомлення\n" +
+                "(коли наприклад зал закритий, і тренування відміняється)\uD83E\uDD37\uD83C\uDFFB\u200D♂️\n" +
+                "-Ну і ще якщо щось придумаю, обов'язково напишу сюди\uD83D\uDE04\n" +
+                "\n" +
+                "❗Важливо❗\n" +
+                "Цей бот НЕ відповідає на повідомлення, він тільки сповіщає\uD83E\uDDD0\n" +
+                "Я не буду бачити повідомлень\uD83D\uDE2C\n" +
+                "Тому якщо хочеш щось розказати, то приходь краще в зал\uD83D\uDE43\n" +
+                "\n" +
+                "Окей, якщо нічого не тягне і не болить, тоді можна спробувати отримати всю інформацію про твої тренування \uD83C\uDFCB️\u200D♂️\uD83D\uDEB4\u200D♂️\uD83C\uDFCB️\u200D♀️\uD83E\uDD3E\u200D♂️\uD83D\uDC83\n" +
+                "\n" +
+                "❗Натискай -> /sho_tam\n" +
+                "\uD83C\uDFC3\u200D♂️\uD83C\uDFC3\u200D♀️");
     }
 
     public SendMessage info(Update update){
         int chatId = Integer.parseInt(update.getMessage().getChatId().toString());
         if(checkChatId(chatId)){
-            return createResponseMessage(update, "Не поспішай!\n" +
-                    "Щоб розпочати роботу з ботом, введи свій номер телефону в форматі '0500000000'");
+            return createResponseMessage(update, "Не поспішай! \uD83D\uDE2C\uD83E\uDD1A\n" +
+                    "Щоб розпочати роботу з ботом, введи свій номер телефону в форматі -> 0500000000");
         }
         return createResponseMessage(update, controller.getByChatId(chatId).toString());
     }
