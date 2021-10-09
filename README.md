@@ -11,7 +11,7 @@
 ## AdminBot
 I'm using this bot like **admin panel**, where I can change, add, remove, some information about customers</br>
 Also, from admin bot I can **send notifications to all customers, who used UserBot.**</br>
-So if something goes wrong, and the gym been closed today, all customers know about it from their bots. 
+So if something goes wrong, and the gym been closed today, all customers will know about it from their bots. 
 </br>
 **AdminBot** — it's a regular CRUD application.
 </br>
