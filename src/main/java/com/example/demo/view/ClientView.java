@@ -30,12 +30,13 @@ public class ClientView {
                 "/create - create new client" + "\n" +
                 "/delete {id} - delete by id" + "\n" +
                 "/send {text} - send all" + "\n" +
-                "/allConnected - all connected to bot" + "\n" +
+                "/all_connected - all connected to bot" + "\n" +
                 "{id} - get user by id" + "\n" +
                 "{date} {id..} - add visit" + "\n" +
                 "Add pay {date} {id} - add payment" + "\n" +
                 "Delete {id} - set active false" + "\n" +
-                "Active {id} - set active true" + "\n";
+                "Active {id} - set active true" + "\n" +
+                "Phone {id} {phone} - update phone" + "\n";
 
         return createResponseMessage(update, result);
     }
@@ -139,6 +140,24 @@ public class ClientView {
         } else {
             return createResponseMessage(update, "Помилка");
         }
+    }
+
+    public SendMessage updatePhone(Update update){
+        String request = update.getMessage().getText().replace("Phone ", "").trim();
+        if(!request.contains(" ")){
+            return createResponseMessage(update, "Bad command");
+        }
+
+        String[] data = request.split(" ");
+        if(checkId(data[0]) == -1){
+            return createResponseMessage(update, "Id does not exist");
+        }
+        if(!data[1].matches("^\\d{10}$")){
+            return createResponseMessage(update, "Bad phone number");
+        }
+        Client client = controller.getById(Integer.parseInt(data[0]));
+        client.setPhone(data[1]);
+        return createResponseMessage(update, "Phone updated\n\n" + controller.update(client));
     }
 
     public SendMessage getAbsolutelyAll(Update update){

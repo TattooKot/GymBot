@@ -55,6 +55,9 @@ public class AdminBot extends TelegramLongPollingBot {
             if(request.contains("Active")) {
                 send(view.activeAgain(update));
             }
+            if(request.contains("Phone")) {
+                send(view.updatePhone(update));
+            }
             if(request.matches("^\\d{1,2}$")) {
                 send(view.getById(update));
             }
@@ -67,7 +70,7 @@ public class AdminBot extends TelegramLongPollingBot {
             if(request.contains("/send")){
                 send(view.sendToAllUsers(update));
             }
-            if(request.equals("/allConnected")){
+            if(request.equals("/all_connected")){
                 send(view.allConnectedToBot(update));
             }
         }
