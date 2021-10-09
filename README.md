@@ -1,28 +1,26 @@
 # GymBot
-Two Telegram bots, written on java(crud application), with using:</br>
+## Here we have two telegram bots, connected with each other
+### Two Telegram bots, written on java(crud application), with using:</br>
 1.Telegram Bot Api</br>
 2.Maven</br>
 3.SpringBoot</br>
 4.SpringData</br>
-5.PostgreSql</br>
-</br>
-First bot was written for me, to help me control customers in my gym
-(count of training sessions, payments, visits, etc.)
-Its like small crm for gym
-</br>
-</br>
-Second bot was written for my customers.</br>
-They always asked me about payments, when gym membership ends, how many trainings they have, why, etc.</br>
-</br>
-First bot called - AdminBot, I'm using like admin panel,</br>
-where I can change, add, remove, some information about customers
-</br>
-From admin bot I can send notifications to all customers, who used UserBot.</br>
+5.MVC</br>
+6.PostgreSql</br>
+7.StreamApi
+## AdminBot
+I'm using this bot like **admin panel**, where I can change, add, remove, some information about customers</br>
+Also, from admin bot I can **send notifications to all customers, who used UserBot.**</br>
 So if something goes wrong, and gym been closed today, all customers know about it from their bots. 
 </br>
-AdminBot - it's a regular crud application.
-</br></br>
-Second bot called - UserBot.</br>
-This bot can only send notifications for customers, and know information about each of customer who used them.</br>
-Customer can use command /sho_tam, and bot give customer all information about this customer from db.
+**AdminBot** - it's a regular crud application.
+</br>
+</br>
+## UserBot
+**UserBot** was written for my customers.</br>
+They always asked me about payments, when gym membership ends, how many trainings they have, why, etc.</br>
+So i decited to write bot for customers.</br>
+Each customer can read information only about one person, so no one can saw information about other customers</br>
+This bot can only send notifications for customers, and give information about each of customer who used them.</br>
+Customer can use command **/sho_tam**, and bot gives customer all information about this customer from db.
 
