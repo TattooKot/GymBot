@@ -36,7 +36,8 @@ public class ClientView {
                 "Add pay {date} {id} - add payment" + "\n" +
                 "Delete {id} - set active false" + "\n" +
                 "Active {id} - set active true" + "\n" +
-                "Phone {id} {phone} - update phone" + "\n";
+                "Phone {id} {phone} - update phone" + "\n" +
+                "Count {id} {count} - update count" + "\n";
 
         return createResponseMessage(update, result);
     }
@@ -160,6 +161,31 @@ public class ClientView {
         return createResponseMessage(update, "Phone updated\n\n" + controller.update(client));
     }
 
+    public SendMessage updateCount(Update update){
+        String text = update.getMessage().getText().replace("Count ", " ").trim();
+        String[] data = text.split(" ");
+        if(data.length != 2){
+            return createResponseMessage(update, "Bad request");
+        }
+
+        int id = checkId(data[0]);
+        if(id == -1){
+            return createResponseMessage(update, "Id does not exist");
+        }
+
+        if(!data[1].matches("^\\d{1,2}$")
+                || Integer.parseInt(data[1]) > 10
+                || Integer.parseInt(data[1]) < 0)
+        {
+            return createResponseMessage(update, "Bad count");
+        }
+
+        Client client = controller.getById(id);
+        client.setCount(Integer.parseInt(data[1]));
+
+        return createResponseMessage(update, "Count updated:\n" + controller.update(client));
+    }
+
     public SendMessage getAbsolutelyAll(Update update){
         return createResponseMessage(update, createStringFromListOfClients(controller.getAbsolutelyAll()));
     }
@@ -187,10 +213,6 @@ public class ClientView {
 
         controller.sendToAllUsers(text);
         return createResponseMessage(update, "Повідомлення надіслано");
-    }
-
-    public SendMessage bestFrau(Update update){
-        return createResponseMessage(update, "You the best frau ever ;)");
     }
 
     private SendMessage createResponseMessage(Update update, String text){

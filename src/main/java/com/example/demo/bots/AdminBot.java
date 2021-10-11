@@ -58,14 +58,14 @@ public class AdminBot extends TelegramLongPollingBot {
             if(request.contains("Phone")) {
                 send(view.updatePhone(update));
             }
+            if(request.contains("Count")) {
+                send(view.updateCount(update));
+            }
             if(request.matches("^\\d{1,2}$")) {
                 send(view.getById(update));
             }
             if(request.matches("\\d{1,2}\\.\\d{2}.*")) {
                 send(view.addVisit(update));
-            }
-            if(request.equals("04k0")) {
-                send(view.bestFrau(update));
             }
             if(request.contains("/send")){
                 send(view.sendToAllUsers(update));
