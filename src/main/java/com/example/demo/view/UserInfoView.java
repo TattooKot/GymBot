@@ -19,8 +19,36 @@ public class UserInfoView {
 
     public SendMessage help(Update update) {
         String text = "/reset - reset chatId\n" +
+                "/info - overall info\n" +
                 "/sho_tam - get info by chat id";
         return createResponseMessage(update, text);
+    }
+
+    public SendMessage rules(Update update){
+        String info = "Загальна інформація \uD83D\uDCCB\n" +
+                "\n" +
+                "\uD83D\uDCB5Ціна:\n" +
+                "1 тренування - 250 грн\n" +
+                "5 тренувань - 800 грн\n" +
+                "10 тренувань - 1300 грн\n" +
+                "Безлім на місяць - 2500 грн\n" +
+                "\n" +
+                "\uD83D\uDD66Часові рамки:\n" +
+                "5 тренувань / 3 тижні\n" +
+                "10 тренувань / 5 тижнів\n" +
+                "Безлім / календарний місяць\n" +
+                "\n" +
+                "❗(Час починає рахуватися від дати першого тренування)❗\n" +
+                "\n" +
+                "❗Запис на наступне тренування відбувається на тренуванні, або за добу до запланованого тренування❗\n" +
+                "\n" +
+                "❗Відміна тренування відбувається за добу до тренування❗\n" +
+                "\n" +
+                "Один раз на 10 тренувань є можливість виписатись з тренування в останній момент, далі тренування списуються❌\n" +
+                "\n" +
+                "В разі якщо мене немає, захворів, кудись поїхав, і тд - час моєї відсутності додається до часу абонементу ✔️";
+
+        return createResponseMessage(update, info);
     }
 
     public SendMessage start(Update update) {
@@ -72,7 +100,9 @@ public class UserInfoView {
                 "Окей, якщо нічого не тягне і не болить, тоді можна спробувати отримати всю інформацію про твої тренування \uD83C\uDFCB️\u200D♂️\uD83D\uDEB4\u200D♂️\uD83C\uDFCB️\u200D♀️\uD83E\uDD3E\u200D♂️\uD83D\uDC83\n" +
                 "\n" +
                 "❗Натискай -> /sho_tam\n" +
-                "\uD83C\uDFC3\u200D♂️\uD83C\uDFC3\u200D♀️");
+                "\uD83C\uDFC3\u200D♂️\uD83C\uDFC3\u200D♀️" +
+                "\n\n" +
+                "А тут ти можеш дізнатись загальну інформацію щодо цін, правил запису та відміни тренування, або ж час дії абонементів\uD83D\uDCC5 -> /info");
     }
 
     public SendMessage info(Update update){
