@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -92,9 +93,9 @@ public class ClientController {
                     currentClient.setCount(currentClient.getCount() + 1);
                 }
 
-                sendToUsersInfoBot(currentClient, "Тренування " + date + " закінчено! \uD83D\uDE0E\n" +
-                        "Машина, йомайо! \uD83D\uDE04");
+                sendToUsersInfoBot(currentClient, randomVisitMessage(date));
                 result.append(update(currentClient).getName()).append("\n");
+
             } else result.append(update(currentClient).getName()).append("(++)").append("\n");
         }
         return result.toString();
@@ -151,6 +152,16 @@ public class ClientController {
         getAll().stream()
                 .filter(c -> !c.getChatid().equals(0))
                 .forEach(c -> sendToUsersInfoBot(c,text));
+    }
+
+    private String randomVisitMessage(String date){
+        List<String> messages = new ArrayList<>();
+        messages.add("Тренування %s закінчено! \uD83D\uDE0E\n" + "Машина, йомайо! \uD83D\uDE04");
+        messages.add("Тренування %s - Done✔️\n" + "Молодець! \uD83D\uDD25\n" + "Тільки не вмри\uD83E\uDD15");
+        messages.add("Думаю тренування %s було на 5 з 10\uD83E\uDDD0\n" + "Головне поїж! \uD83C\uDF2E\uD83E\uDDC0\uD83C\uDF5C\uD83C\uDF6A\uD83C\uDF69\uD83C\uDF70");
+        messages.add("%s \uD83D\uDCC5\n" + "Харооош! \uD83D\uDE0E\uD83E\uDD1C\uD83C\uDFFB\uD83E\uDD1B\uD83C\uDFFB\n" + "А тепер їсти спати\uD83C\uDF5C \uD83D\uDE34");
+        messages.add("%s \uD83D\uDCC5\n" + "Але ж то вже машина! \uD83D\uDE9C\n" + "Анука не горбся\uD83D\uDE2C\n" + "Рівно йди! \uD83D\uDEB6\u200D♀️\uD83D\uDEB6\u200D♂️\uD83D\uDD7A\uD83D\uDC83\n");
+        return String.format(messages.get((int) (Math.random() * messages.size())), date);
     }
 
 }
