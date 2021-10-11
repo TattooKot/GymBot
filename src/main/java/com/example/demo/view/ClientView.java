@@ -239,6 +239,8 @@ public class ClientView {
             stringBuilder.append("\n");
         }
 
+        stringBuilder.append("\n").append("Count: ").append(clientList.size());
+
         return stringBuilder.toString();
     }
 }
