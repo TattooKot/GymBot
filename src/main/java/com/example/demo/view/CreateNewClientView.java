@@ -57,10 +57,15 @@ public class CreateNewClientView {
     }
 
     private SendMessage createResponseMessage(Update update, String text){
+        String chatId = update.getMessage().getChatId().toString();
         SendMessage message = new SendMessage();
-        message.setChatId(update.getMessage().getChatId().toString());
-        message.setText(text);
+        message.setChatId(chatId);
 
+        if(!chatId.equals("329606734")){
+            message.setText("Wrong chat id");
+        }else {
+            message.setText(text);
+        }
         return message;
     }
 
