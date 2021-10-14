@@ -41,6 +41,9 @@ public class Client {
     @Column(name = "chatid")
     private Integer chatid;
 
+    @Column(name = "notification")
+    private boolean notification;
+
     public Client() {
         this.name = "";
         this.payday = LocalDate.parse(("01.01.1970"), DateTimeFormatter.ofPattern("dd.MM.yyyy"));
@@ -50,6 +53,7 @@ public class Client {
         this.frequency = "";
         this.phone = "";
         this.chatid = 0;
+        this.notification = false;
     }
 
     @Override
@@ -95,6 +99,14 @@ public class Client {
                      .forEach(d -> result.append(new SimpleDateFormat("dd.MM").format(d)).append("\n"));
          }
         return result.toString();
+    }
+
+    public boolean isNotification() {
+        return notification;
+    }
+
+    public void setNotification(boolean notification) {
+        this.notification = notification;
     }
 
     public Integer getChatid() {

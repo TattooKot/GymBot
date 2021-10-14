@@ -7,15 +7,17 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 public class ClientController {
+
     private final ClientRepositoryImpl repository;
     private final UserInfoBot userInfoBot;
+    private Timer timer = new Timer();
 
     public ClientController(@Lazy ClientRepositoryImpl repository, @Lazy UserInfoBot userInfoBot) {
         this.repository = repository;
@@ -65,11 +67,38 @@ public class ClientController {
     }
 
     public Client createNew(Client client){
+        updateTimer();
         return repository.create(client);
     }
 
     public Client update(Client client) {
         return repository.update(client);
+    }
+
+    public Client addPayment(LocalDate payDay, int id){
+        Client client = getById(id);
+        client.setNotification(false);
+        updateTimer();
+
+        //if trainings started already
+        if(client.getName().contains("(!)")){
+            client.setName(client.getName().replace("(!)", ""));
+            sendToUsersInfoBot(client, "❗Додано 10 тренувань❗\n" +
+                    "Нагадую що тренування дійсні\n" +
+                    "Від: " +client.getPayday().format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
+                    "До: " + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM")));
+            return update(client);
+        }
+
+        //if everything okay, add new 10 trainings
+        client.setPayday(payDay);
+        client.setCount(1);
+        client.setFrequency(payDay.format(DateTimeFormatter.ofPattern("dd.MM"))+ "(payday)," + client.getFrequency());
+        sendToUsersInfoBot(client, "❗Додано 10 тренувань❗\nНагадую, що тренування дійсні\n" +
+                "Від: " +payDay.format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
+                "До: " + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM")));
+
+        return update(client);
     }
 
     public String addVisit(List<String> stringIdList, String date){
@@ -100,45 +129,26 @@ public class ClientController {
         }
         return result.toString();
     }
-    
-    public Client addPayment(LocalDate payDay, int id){
-        Client client = getById(id);
-
-        //if trainings started already
-        if(client.getName().contains("(!)")){
-            client.setName(client.getName().replace("(!)", ""));
-            sendToUsersInfoBot(client, "❗Додано 10 тренувань❗\n" +
-                    "Нагадую що тренування дійсні\n" +
-                    "Від: " +client.getPayday().format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
-                    "До: " + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM")));
-            return update(client);
-        }
-
-        //if everything okay, add new 10 trainings
-        client.setPayday(payDay);
-        client.setCount(1);
-        client.setFrequency(payDay.format(DateTimeFormatter.ofPattern("dd.MM"))+ "(payday)," + client.getFrequency());
-        sendToUsersInfoBot(client, "❗Додано 10 тренувань❗\nНагадую, що тренування дійсні\n" +
-                "Від: " +payDay.format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
-                "До: " + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM")));
-
-        return update(client);
-    }
 
     public void notActive(int id){
         Client client = getById(id);
         client.setActive(false);
+        client.setNotification(true);
         update(client);
+        updateTimer();
     }
 
     public void activeAgain(int id){
         Client client = getById(id);
         client.setActive(true);
+        client.setNotification(false);
         update(client);
+        updateTimer();
     }
 
     public void deleteById(int id){
         repository.deleteById(id);
+        updateTimer();
     }
 
     public void sendToUsersInfoBot(Client client, String text){
@@ -154,6 +164,29 @@ public class ClientController {
                 .forEach(c -> sendToUsersInfoBot(c,text));
     }
 
+    public void paymentNotification(Timer timer){
+
+        getAll().forEach(client -> {
+            if(client.isActive() && !client.isNotification()) {
+                LocalDate weekBeforeDay = client.getLastday().minusDays(5);
+                Date weekBeforeNotification = Date.from(weekBeforeDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                weekBeforeNotification.setHours(10);
+                TimerTask task = new TimerTask() {
+                    @Override
+                    public void run() {
+                        sendToUsersInfoBot(client, "Тренування закінчуються "
+                                + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                                + " \uD83D\uDCC5\uD83D\uDE35");
+                        client.setNotification(true);
+                        update(client);
+                    }
+                };
+                timer.schedule(task, weekBeforeNotification);
+            }
+        });
+
+    }
+
     private String randomVisitMessage(String date){
         List<String> messages = new ArrayList<>();
         messages.add("Тренування %s закінчено! \uD83D\uDE0E\n" + "Машина, йомайо! \uD83D\uDE04");
@@ -162,6 +195,13 @@ public class ClientController {
         messages.add("%s \uD83D\uDCC5\n" + "Харооош! \uD83D\uDE0E\uD83E\uDD1C\uD83C\uDFFB\uD83E\uDD1B\uD83C\uDFFB\n" + "А тепер їсти спати\uD83C\uDF5C \uD83D\uDE34");
         messages.add("%s \uD83D\uDCC5\n" + "Але ж то вже машина! \uD83D\uDE9C\n" + "Анука не горбся\uD83D\uDE2C\n" + "Рівно йди! \uD83D\uDEB6\u200D♀️\uD83D\uDEB6\u200D♂️\uD83D\uDD7A\uD83D\uDC83\n");
         return String.format(messages.get((int) (Math.random() * messages.size())), date);
+    }
+
+    private void updateTimer(){
+        timer.cancel();
+        timer.purge();
+        timer = new Timer();
+        paymentNotification(timer);
     }
 
 }
