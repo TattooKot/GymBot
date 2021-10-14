@@ -44,7 +44,11 @@ public class UserInfoBot extends TelegramLongPollingBot {
     }
 
     public void messageToUser(int chatId, String text){
-        SendMessage message = new SendMessage(String.valueOf(chatId), text);
+        String disclaimer = "Привіт \uD83D\uDD90️\uD83D\uDE0A\n" +
+                "Це повідомлення створено автоматично, і надіслане всім хто підключений до боту\uD83E\uDD16\n" +
+                "Відповідати на нього не треба ❌\n" +
+                "\n";
+        SendMessage message = new SendMessage(String.valueOf(chatId), disclaimer + text);
         send(message);
     }
 
