@@ -1,6 +1,6 @@
 package com.example.demo.view;
 
-import com.example.demo.controller.ClientController;
+import com.example.demo.controller.UserBotController;
 import com.example.demo.model.Client;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -11,10 +11,10 @@ import java.util.Objects;
 @Component
 public class UserInfoView {
 
-    private final ClientController controller;
+    private final UserBotController controller;
 
-    public UserInfoView(ClientController clientController) {
-        this.controller = clientController;
+    public UserInfoView(UserBotController controller) {
+        this.controller = controller;
     }
 
     public SendMessage help(Update update) {

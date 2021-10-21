@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.bots.UserInfoBot;
 import com.example.demo.model.Client;
 import com.example.demo.repository.ClientRepositoryImpl;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -13,66 +12,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class ClientController {
+public class AdminBotController extends CrudController{
 
-    private final ClientRepositoryImpl repository;
     private final UserInfoBot userInfoBot;
     private Timer timer = new Timer();
 
-    public ClientController(@Lazy ClientRepositoryImpl repository, @Lazy UserInfoBot userInfoBot) {
-        this.repository = repository;
+    public AdminBotController(ClientRepositoryImpl repository, UserInfoBot userInfoBot) {
+        super(repository);
         this.userInfoBot = userInfoBot;
     }
 
-    public List<Client> getAll(){
-        List<Client> clientList = repository.getAll();
-        clientList.removeIf(c -> !c.isActive());
-        return clientList;
-    }
-
-    public List<Client> getAbsolutelyAll(){
-        return repository.getAll();
-    }
-
-    public List<Client> paySoon() {
-        return repository.paySoon();
-    }
-
-    public List<Client> allConnectedToBot(){
-        return getAbsolutelyAll().stream()
-                .filter(c -> c.getChatid() != 0)
-                .collect(Collectors.toList());
-    }
-
-    public boolean checkById(int id){
-        return repository.checkById(id);
-    }
-
-    public Client getById(int id){
-        return repository.getById(id);
-    }
-
-    public Client getByPhone(String phone){
-        return getAbsolutelyAll().stream()
-                .filter(c -> c.getPhone().equals(phone))
-                .findFirst()
-                .orElse(null);
-    }
-
-    public Client getByChatId(Integer chatId){
-        return getAbsolutelyAll().stream()
-                .filter(c -> c.getChatid().equals(chatId))
-                .findFirst()
-                .orElse(null);
-    }
-
-    public Client createNew(Client client){
+    @Override
+    public Client createNew(Client client) {
         updateTimer();
-        return repository.create(client);
-    }
-
-    public Client update(Client client) {
-        return repository.update(client);
+        return super.createNew(client);
     }
 
     public Client addPayment(LocalDate payDay, int id){
@@ -130,6 +83,16 @@ public class ClientController {
         return result.toString();
     }
 
+    public List<Client> paySoon() {
+        return repository.paySoon();
+    }
+
+    public List<Client> allConnectedToBot(){
+        return getAbsolutelyAll().stream()
+                .filter(c -> c.getChatid() != 0)
+                .collect(Collectors.toList());
+    }
+
     public void notActive(int id){
         Client client = getById(id);
         client.setActive(false);
@@ -164,7 +127,24 @@ public class ClientController {
                 .forEach(c -> sendToUsersInfoBot(c,text));
     }
 
-    public void paymentNotification(Timer timer){
+    private String randomVisitMessage(String date){
+        List<String> messages = new ArrayList<>();
+        messages.add("Тренування %s закінчено! \uD83D\uDE0E\n" + "Машина, йомайо! \uD83D\uDE04");
+        messages.add("Тренування %s - Done✔️\n" + "Молодець! \uD83D\uDD25\n" + "Тільки не вмри\uD83E\uDD15");
+        messages.add("Думаю тренування %s було на 5 з 10\uD83E\uDDD0\n" + "Головне поїж! \uD83C\uDF2E\uD83E\uDDC0\uD83C\uDF5C\uD83C\uDF6A\uD83C\uDF69\uD83C\uDF70");
+        messages.add("%s \uD83D\uDCC5\n" + "Харооош! \uD83D\uDE0E\uD83E\uDD1C\uD83C\uDFFB\uD83E\uDD1B\uD83C\uDFFB\n" + "А тепер їсти спати\uD83C\uDF5C \uD83D\uDE34");
+        messages.add("%s \uD83D\uDCC5\n" + "Але ж то вже машина! \uD83D\uDE9C\n" + "Анука не горбся\uD83D\uDE2C\n" + "Рівно йди! \uD83D\uDEB6\u200D♀️\uD83D\uDEB6\u200D♂️\uD83D\uDD7A\uD83D\uDC83\n");
+        return String.format(messages.get((int) (Math.random() * messages.size())), date);
+    }
+
+    private void updateTimer(){
+        timer.cancel();
+        timer.purge();
+        timer = new Timer();
+        paymentNotification(timer);
+    }
+
+    private void paymentNotification(Timer timer){
 
         getAll().forEach(client -> {
             if(client.isActive() && !client.isNotification()) {
@@ -185,23 +165,6 @@ public class ClientController {
             }
         });
 
-    }
-
-    private String randomVisitMessage(String date){
-        List<String> messages = new ArrayList<>();
-        messages.add("Тренування %s закінчено! \uD83D\uDE0E\n" + "Машина, йомайо! \uD83D\uDE04");
-        messages.add("Тренування %s - Done✔️\n" + "Молодець! \uD83D\uDD25\n" + "Тільки не вмри\uD83E\uDD15");
-        messages.add("Думаю тренування %s було на 5 з 10\uD83E\uDDD0\n" + "Головне поїж! \uD83C\uDF2E\uD83E\uDDC0\uD83C\uDF5C\uD83C\uDF6A\uD83C\uDF69\uD83C\uDF70");
-        messages.add("%s \uD83D\uDCC5\n" + "Харооош! \uD83D\uDE0E\uD83E\uDD1C\uD83C\uDFFB\uD83E\uDD1B\uD83C\uDFFB\n" + "А тепер їсти спати\uD83C\uDF5C \uD83D\uDE34");
-        messages.add("%s \uD83D\uDCC5\n" + "Але ж то вже машина! \uD83D\uDE9C\n" + "Анука не горбся\uD83D\uDE2C\n" + "Рівно йди! \uD83D\uDEB6\u200D♀️\uD83D\uDEB6\u200D♂️\uD83D\uDD7A\uD83D\uDC83\n");
-        return String.format(messages.get((int) (Math.random() * messages.size())), date);
-    }
-
-    private void updateTimer(){
-        timer.cancel();
-        timer.purge();
-        timer = new Timer();
-        paymentNotification(timer);
     }
 
 }

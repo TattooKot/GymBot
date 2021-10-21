@@ -1,6 +1,6 @@
 package com.example.demo.view;
 
-import com.example.demo.controller.ClientController;
+import com.example.demo.controller.AdminBotController;
 import com.example.demo.model.Client;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -11,13 +11,13 @@ import java.time.LocalDate;
 @Component
 public class CreateNewClientView {
 
-    private final ClientController controller;
+    private final AdminBotController controller;
     private boolean wantCreate = false;
     private boolean nameAdded;
     private boolean phoneAdded;
     private Client client;
 
-    public CreateNewClientView(ClientController controller) {
+    public CreateNewClientView(AdminBotController controller) {
         this.controller = controller;
     }
 

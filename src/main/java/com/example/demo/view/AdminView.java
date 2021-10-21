@@ -1,7 +1,7 @@
 package com.example.demo.view;
 
 
-import com.example.demo.controller.ClientController;
+import com.example.demo.controller.AdminBotController;
 import com.example.demo.model.Client;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,11 +14,11 @@ import java.time.ZoneId;
 import java.util.List;
 
 @Component
-public class ClientView {
+public class AdminView {
 
-    private final ClientController controller;
+    private final AdminBotController controller;
 
-    public ClientView(ClientController controller) {
+    public AdminView(AdminBotController controller) {
         this.controller = controller;
     }
 

@@ -1,6 +1,6 @@
 package com.example.demo.bots;
 
-import com.example.demo.view.ClientView;
+import com.example.demo.view.AdminView;
 import com.example.demo.view.CreateNewClientView;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -11,10 +11,10 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Component
 public class AdminBot extends TelegramLongPollingBot {
 
-    private final ClientView view;
+    private final AdminView view;
     private final CreateNewClientView createView;
 
-    public AdminBot(ClientView view, CreateNewClientView createView) {
+    public AdminBot(AdminView view, CreateNewClientView createView) {
         this.view = view;
         this.createView = createView;
     }
