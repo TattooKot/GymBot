@@ -80,6 +80,7 @@ public class AdminBotController extends CrudController{
 
             } else result.append(update(currentClient).getName()).append("(++)").append("\n");
         }
+        updateTimer();
         return result.toString();
     }
 
