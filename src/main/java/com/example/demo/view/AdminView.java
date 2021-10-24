@@ -38,6 +38,7 @@ public class AdminView {
                 "Add pay {date} {id} - add payment" + "\n" +
                 "Delete {id} - set active false" + "\n" +
                 "Active {id} - set active true" + "\n" +
+                "Name {id} {name} - update name" + "\n" +
                 "Phone {id} {phone} - update phone" + "\n" +
                 "Count {id} {count} - update count" + "\n";
 
