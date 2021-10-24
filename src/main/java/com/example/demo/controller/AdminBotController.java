@@ -96,6 +96,18 @@ public class AdminBotController extends CrudController{
                 .collect(Collectors.toList());
     }
 
+    public Client updateCountById(int id, int count){
+        Client client = getById(id);
+        client.setCount(count);
+        return update(client);
+    }
+
+    public Client updatePhoneById(int id, String phone){
+        Client client = getById(id);
+        client.setPhone(phone);
+        return update(client);
+    }
+
     public void notActive(int id){
         Client client = getById(id);
         client.setActive(false);

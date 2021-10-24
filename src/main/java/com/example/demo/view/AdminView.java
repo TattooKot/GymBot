@@ -63,13 +63,9 @@ public class AdminView {
     }
 
     public SendMessage notActive(Update update){
-        String request = update.getMessage().getText();
+        String request = update.getMessage().getText().replace("Delete", "").trim();
 
-        if(request.length() <= 7){
-            return createResponseMessage(update, "Щоб деактивувати користувача вкажіть його id");
-        }
-
-        int id = checkId(request.substring(7));
+        int id = checkId(request);
         if(id == -1){
             return createResponseMessage(update, "Неправильний id");
         }
@@ -78,13 +74,9 @@ public class AdminView {
     }
 
     public SendMessage activeAgain(Update update){
-        String request = update.getMessage().getText();
+        String request = update.getMessage().getText().replace("Active", "").trim();
 
-        if(request.length() <= 7){
-            return createResponseMessage(update, "Щоб активувати користувача вкажіть його id");
-        }
-
-        int id = checkId(request.substring(7));
+        int id = checkId(request);
         if(id == -1){
             return createResponseMessage(update, "Неправильний id");
         }
@@ -145,45 +137,50 @@ public class AdminView {
 
     public SendMessage updatePhone(Update update){
         String request = update.getMessage().getText().replace("Phone ", "").trim();
+
         if(!request.contains(" ")){
             return createResponseMessage(update, "Bad command");
         }
 
         String[] data = request.split(" ");
-        if(checkId(data[0]) == -1){
+        String id = data[0];
+        String phone = data[1];
+
+        if(checkId(id) == -1){
             return createResponseMessage(update, "Id does not exist");
         }
-        if(!data[1].matches("^\\d{10}$")){
+        if(!phone.matches("^\\d{10}$")){
             return createResponseMessage(update, "Bad phone number");
         }
-        Client client = controller.getById(Integer.parseInt(data[0]));
-        client.setPhone(data[1]);
-        return createResponseMessage(update, "Phone updated\n\n" + controller.update(client));
+
+        return createResponseMessage(update, "Phone updated\n\n"
+                + controller.updatePhoneById(Integer.parseInt(id), phone));
     }
 
     public SendMessage updateCount(Update update){
         String text = update.getMessage().getText().replace("Count ", " ").trim();
         String[] data = text.split(" ");
+
         if(data.length != 2){
             return createResponseMessage(update, "Bad request");
         }
 
         int id = checkId(data[0]);
+        String count = data[1];
+
         if(id == -1){
             return createResponseMessage(update, "Id does not exist");
         }
 
-        if(!data[1].matches("^\\d{1,2}$")
+        if(!count.matches("^\\d{1,2}$")
                 || Integer.parseInt(data[1]) > 10
                 || Integer.parseInt(data[1]) < 0)
         {
             return createResponseMessage(update, "Bad count");
         }
 
-        Client client = controller.getById(id);
-        client.setCount(Integer.parseInt(data[1]));
-
-        return createResponseMessage(update, "Count updated:\n" + controller.update(client));
+        return createResponseMessage(update, "Count updated:\n"
+                + controller.updateCountById(id, Integer.parseInt(count)));
     }
 
     public SendMessage getAbsolutelyAll(Update update){
