@@ -36,19 +36,23 @@ public class AdminBotController extends CrudController{
         //if trainings started already
         if(client.getName().contains("(!)")){
             client.setName(client.getName().replace("(!)", ""));
+
             sendToUsersInfoBot(client, "❗Додано 10 тренувань❗\n" +
                     "Нагадую що тренування дійсні\n" +
                     "Від: " +client.getPayday().format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
                     "До: " + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM")));
+
             return update(client);
         }
 
         //if everything okay, add new 10 trainings
         client.setPayday(payDay);
         client.setCount(1);
+
         if(!client.getFrequency().contains(payDay.format(DateTimeFormatter.ofPattern("dd.MM")))){
             client.setFrequency(payDay.format(DateTimeFormatter.ofPattern("dd.MM"))+ "(payday)," + client.getFrequency());
         }
+
         sendToUsersInfoBot(client, "❗Додано 10 тренувань❗\nНагадую, що тренування дійсні\n" +
                 "Від: " +payDay.format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
                 "До: " + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM")));
@@ -56,8 +60,8 @@ public class AdminBotController extends CrudController{
         return update(client);
     }
 
-    public String addVisit(List<String> stringIdList, String date){
-        List<Client> clientList = stringIdList.stream()
+    public String addVisit(List<String> idList, String date){
+        List<Client> clientList = idList.stream()
                 .map(Integer::parseInt)
                 .map(this::getById)
                 .collect(Collectors.toList());
@@ -68,13 +72,13 @@ public class AdminBotController extends CrudController{
 
             if (!currentClient.getFrequency().contains(date)) {
                 if (currentClient.getCount() == 10) {
+                    currentClient.setName(currentClient.getName() + "(!)");
                     currentClient.setFrequency(date + "(!)," + currentClient.getFrequency());
                     currentClient.setCount(1);
-                    currentClient.setName(currentClient.getName() + "(!)");
                     currentClient.setPayday(LocalDate.now());
                 } else {
-                    currentClient.setFrequency(date + "," + currentClient.getFrequency());
                     currentClient.setCount(currentClient.getCount() + 1);
+                    currentClient.setFrequency(date + "," + currentClient.getFrequency());
                 }
 
                 sendToUsersInfoBot(currentClient, randomVisitMessage(date));
@@ -169,9 +173,11 @@ public class AdminBotController extends CrudController{
 
         getAll().forEach(client -> {
             if(client.isActive() && !client.isNotification()) {
+
                 LocalDate weekBeforeDay = client.getLastday().minusDays(5);
-                Date weekBeforeNotification = Date.from(weekBeforeDay.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                weekBeforeNotification.setHours(10);
+                Calendar weekBeforeNotification = GregorianCalendar.from(weekBeforeDay.atStartOfDay(ZoneId.systemDefault()));
+                weekBeforeNotification.set(Calendar.HOUR_OF_DAY, 10);
+
                 TimerTask task = new TimerTask() {
                     @Override
                     public void run() {
@@ -182,7 +188,8 @@ public class AdminBotController extends CrudController{
                         update(client);
                     }
                 };
-                timer.schedule(task, weekBeforeNotification);
+
+                timer.schedule(task, weekBeforeNotification.getTime());
             }
         });
 
