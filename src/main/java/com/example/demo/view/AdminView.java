@@ -180,6 +180,23 @@ public class AdminView {
                 + controller.updateCountById(id, Integer.parseInt(count)));
     }
 
+    public SendMessage updateName(Update update){
+        String[] data = getDataArrayFromRequest(update,"Name");
+
+        if(Objects.isNull(data)){
+            return createResponseMessage(update, "Bad command");
+        }
+
+        int id = checkId(data[0]);
+        String name = data[1];
+
+        if(id == -1){
+            return createResponseMessage(update, "Id does not exist");
+        }
+
+        return createResponseMessage(update, "Name updated:\n" + controller.updateNameById(id, name));
+    }
+
     public SendMessage getAbsolutelyAll(Update update){
         return createResponseMessage(update, createStringFromListOfClients(controller.getAbsolutelyAll()));
     }

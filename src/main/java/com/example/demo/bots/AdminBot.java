@@ -46,6 +46,12 @@ public class AdminBot extends TelegramLongPollingBot {
             if(request.contains("/get_all_all")) {
                 send(view.getAbsolutelyAll(update));
             }
+            if(request.contains("/send")){
+                send(view.sendToAllUsers(update));
+            }
+            if(request.equals("/all_connected")){
+                send(view.allConnectedToBot(update));
+            }
             if(request.contains("Add pay")) {
                 send(view.addPayment(update));
             }
@@ -61,17 +67,14 @@ public class AdminBot extends TelegramLongPollingBot {
             if(request.contains("Count")) {
                 send(view.updateCount(update));
             }
+            if(request.contains("Name")) {
+                send(view.updateName(update));
+            }
             if(request.matches("^\\d{1,2}$")) {
                 send(view.getById(update));
             }
             if(request.matches("\\d{1,2}\\.\\d{2}.*")) {
                 send(view.addVisit(update));
-            }
-            if(request.contains("/send")){
-                send(view.sendToAllUsers(update));
-            }
-            if(request.equals("/all_connected")){
-                send(view.allConnectedToBot(update));
             }
         }
 
