@@ -3,6 +3,7 @@ package com.example.demo.view;
 
 import com.example.demo.controller.AdminBotController;
 import com.example.demo.model.Client;
+import com.example.demo.model.Fields;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -109,93 +110,19 @@ public class AdminView {
     }
 
     public SendMessage addPayment(Update update) {
-        String[] data = getDataArrayFromRequest(update, "Add pay");
-
-        if(Objects.isNull(data)){
-            return createResponseMessage(update, "Bad command");
-        }
-
-        int id = checkId(data[0]);
-        String date = data[1] + ".2021";
-
-        if(id == -1){
-            return createResponseMessage(update, "Id does not exist");
-        }
-
-        LocalDate payDay = null;
-
-        try {
-            payDay = new SimpleDateFormat("dd.MM.yyyy").parse(date)
-                    .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return createResponseMessage(update, "Payment added:\n" + controller.addPayment(payDay, id));
-
+        return updateClientInfo(update, Fields.PAYMENT);
     }
 
     public SendMessage updatePhone(Update update){
-        String[] data = getDataArrayFromRequest(update, "Phone");
-
-        if(Objects.isNull(data)){
-            return createResponseMessage(update, "Bad command");
-        }
-
-        String id = data[0];
-        String phone = data[1];
-
-        if(checkId(id) == -1){
-            return createResponseMessage(update, "Id does not exist");
-        }
-        if(!phone.matches("^\\d{10}$")){
-            return createResponseMessage(update, "Bad phone number");
-        }
-
-        return createResponseMessage(update, "Phone updated\n\n"
-                + controller.updatePhoneById(Integer.parseInt(id), phone));
+        return updateClientInfo(update, Fields.PHONE);
     }
 
     public SendMessage updateCount(Update update){
-        String[] data = getDataArrayFromRequest(update, "Count");
-
-        if(Objects.isNull(data)){
-            return createResponseMessage(update, "Bad command");
-        }
-
-        int id = checkId(data[0]);
-        String count = data[1];
-
-        if(id == -1){
-            return createResponseMessage(update, "Id does not exist");
-        }
-
-        if(!count.matches("^\\d{1,2}$")
-                || Integer.parseInt(data[1]) > 10
-                || Integer.parseInt(data[1]) < 0)
-        {
-            return createResponseMessage(update, "Bad count");
-        }
-
-        return createResponseMessage(update, "Count updated:\n"
-                + controller.updateCountById(id, Integer.parseInt(count)));
+        return updateClientInfo(update, Fields.COUNT);
     }
 
     public SendMessage updateName(Update update){
-        String[] data = getDataArrayFromRequest(update,"Name");
-
-        if(Objects.isNull(data)){
-            return createResponseMessage(update, "Bad command");
-        }
-
-        int id = checkId(data[0]);
-        String name = data[1];
-
-        if(id == -1){
-            return createResponseMessage(update, "Id does not exist");
-        }
-
-        return createResponseMessage(update, "Name updated:\n" + controller.updateNameById(id, name));
+        return updateClientInfo(update, Fields.NAME);
     }
 
     public SendMessage getAbsolutelyAll(Update update){
@@ -286,5 +213,60 @@ public class AdminView {
         }
 
         return request.split(" ");
+    }
+
+    private SendMessage updateClientInfo(Update update, Fields field){
+        String[] data = getDataArrayFromRequest(update,field.toString());
+
+        if(Objects.isNull(data)){
+            return createResponseMessage(update, "Bad command");
+        }
+
+        int id = checkId(data[0]);
+        String value = data[1];
+
+        if(id == -1){
+            return createResponseMessage(update, "Id does not exist");
+        }
+
+        if (field == Fields.NAME) {
+            return createResponseMessage(update, "Name updated:\n" + controller.updateNameById(id, value));
+        }
+
+        if (field == Fields.PHONE) {
+
+            if (!value.matches("^\\d{10}$")) {
+                return createResponseMessage(update, "Bad phone number");
+            }
+            return createResponseMessage(update, "Phone updated\n\n"
+                    + controller.updatePhoneById(id, value));
+
+        }
+
+        if (field == Fields.COUNT) {
+
+            if (!value.matches("^\\d{1,2}$")
+                    || Integer.parseInt(data[1]) > 10
+                    || Integer.parseInt(data[1]) < 0) {
+                return createResponseMessage(update, "Bad count");
+            }
+            return createResponseMessage(update, "Count updated:\n"
+                    + controller.updateCountById(id, Integer.parseInt(value)));
+        }
+
+        if (field == Fields.PAYMENT) {
+            value += ".2021";
+            LocalDate payDay = null;
+            try {
+                payDay = new SimpleDateFormat("dd.MM.yyyy").parse(value)
+                        .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            return createResponseMessage(update, "Payment added:\n" + controller.addPayment(payDay, id));
+        }
+
+        return createResponseMessage(update, "ERROR in updateClientInfo " + id + " " + value);
     }
 }
