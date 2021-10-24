@@ -11,7 +11,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class AdminView {
@@ -86,12 +88,12 @@ public class AdminView {
 
     public SendMessage addVisit(Update update) {
         String request = update.getMessage().getText();
-        String date = request.substring(0,5);
+        String date = request.substring(0,request.indexOf(" "));
 
-        if(request.length() == 5)
-            return createResponseMessage(update, "Щоб додати візити вкажіть дату та індекси через ' '  \n");
-
-        List<String> clients = List.of(request.substring(6).split(" "));
+        List<String> clients = new ArrayList<>(
+                List.of(request.substring(request.indexOf(" "))
+                        .trim()
+                        .split(" ")));
 
         for(String client : clients){
             int id = checkId(client);
@@ -99,50 +101,46 @@ public class AdminView {
                 return createResponseMessage(update, "Неправильний Id: " + id);
             }
         }
+
         return createResponseMessage(update,controller.addVisit(clients, date)
                 + "\n" + createStringFromListOfClients(controller.getAll()));
 
     }
 
     public SendMessage addPayment(Update update) {
-        String request = update.getMessage().getText();
+        String[] data = getDataArrayFromRequest(update, "Add pay");
 
-        if(request.length() == 7) {
-            return createResponseMessage(update, "Щоб додати оплату вкажіть дату та id\n");
-        } else if(request.length() == 13){
-            return createResponseMessage(update, "Щоб додати оплату вкажіть також id\n");
-        }else if(request.length() == 15 || request.length() == 16){
-            String date = request.substring(8, 13) + ".2021";
-            int id = checkId(request.substring(14));
-
-            if(id == -1){
-                return createResponseMessage(update, "Id does not exist");
-            }
-
-            LocalDate payDay = null;
-
-            try {
-                payDay = new SimpleDateFormat("dd.MM.yyyy").parse(date)
-                        .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            return createResponseMessage(update, "Payment added:\n" + controller.addPayment(payDay, id));
-
-        } else {
-            return createResponseMessage(update, "Помилка");
-        }
-    }
-
-    public SendMessage updatePhone(Update update){
-        String request = update.getMessage().getText().replace("Phone ", "").trim();
-
-        if(!request.contains(" ")){
+        if(Objects.isNull(data)){
             return createResponseMessage(update, "Bad command");
         }
 
-        String[] data = request.split(" ");
+        int id = checkId(data[0]);
+        String date = data[1] + ".2021";
+
+        if(id == -1){
+            return createResponseMessage(update, "Id does not exist");
+        }
+
+        LocalDate payDay = null;
+
+        try {
+            payDay = new SimpleDateFormat("dd.MM.yyyy").parse(date)
+                    .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return createResponseMessage(update, "Payment added:\n" + controller.addPayment(payDay, id));
+
+    }
+
+    public SendMessage updatePhone(Update update){
+        String[] data = getDataArrayFromRequest(update, "Phone");
+
+        if(Objects.isNull(data)){
+            return createResponseMessage(update, "Bad command");
+        }
+
         String id = data[0];
         String phone = data[1];
 
@@ -158,11 +156,10 @@ public class AdminView {
     }
 
     public SendMessage updateCount(Update update){
-        String text = update.getMessage().getText().replace("Count ", " ").trim();
-        String[] data = text.split(" ");
+        String[] data = getDataArrayFromRequest(update, "Count");
 
-        if(data.length != 2){
-            return createResponseMessage(update, "Bad request");
+        if(Objects.isNull(data)){
+            return createResponseMessage(update, "Bad command");
         }
 
         int id = checkId(data[0]);
@@ -188,7 +185,7 @@ public class AdminView {
     }
 
     public SendMessage deleteById(Update update){
-        String data = update.getMessage().getText().substring(8);
+        String data = update.getMessage().getText().replace("/delete", "").trim();
         int id = checkId(data);
         if(id == -1){
             return createResponseMessage(update, "Неправильний id");
@@ -261,5 +258,15 @@ public class AdminView {
         stringBuilder.append("\n").append("Count: ").append(clientList.size());
 
         return stringBuilder.toString();
+    }
+
+    private String[] getDataArrayFromRequest(Update update, String command){
+        String request = update.getMessage().getText().replace(command, "").trim();
+
+        if(!request.contains(" ")){
+            return null;
+        }
+
+        return request.split(" ");
     }
 }
