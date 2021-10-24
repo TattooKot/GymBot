@@ -205,8 +205,8 @@ public class AdminView {
         return stringBuilder.toString();
     }
 
-    private String[] getDataArrayFromRequest(Update update, String command){
-        String request = update.getMessage().getText().replace(command, "").trim();
+    private String[] getDataArrayFromRequest(Update update, String fieldName){
+        String request = update.getMessage().getText().replace(fieldName, "").trim();
 
         if(!request.contains(" ")){
             return null;
@@ -219,7 +219,7 @@ public class AdminView {
         String[] data = getDataArrayFromRequest(update,field.toString());
 
         if(Objects.isNull(data)){
-            return createResponseMessage(update, "Bad command");
+            return createResponseMessage(update, "Bad arguments");
         }
 
         int id = checkId(data[0]);
