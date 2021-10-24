@@ -46,7 +46,9 @@ public class AdminBotController extends CrudController{
         //if everything okay, add new 10 trainings
         client.setPayday(payDay);
         client.setCount(1);
-        client.setFrequency(payDay.format(DateTimeFormatter.ofPattern("dd.MM"))+ "(payday)," + client.getFrequency());
+        if(!client.getFrequency().contains(payDay.format(DateTimeFormatter.ofPattern("dd.MM")))){
+            client.setFrequency(payDay.format(DateTimeFormatter.ofPattern("dd.MM"))+ "(payday)," + client.getFrequency());
+        }
         sendToUsersInfoBot(client, "❗Додано 10 тренувань❗\nНагадую, що тренування дійсні\n" +
                 "Від: " +payDay.format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
                 "До: " + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM")));
