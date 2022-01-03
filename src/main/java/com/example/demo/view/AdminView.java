@@ -106,7 +106,6 @@ public class AdminView {
 
         return createResponseMessage(update,controller.addVisit(customers, date)
                 + "\n" + createStringFromListOfCustomers(controller.getAll()));
-
     }
 
     public SendMessage addPayment(Update update) {
@@ -234,17 +233,14 @@ public class AdminView {
         }
 
         if (field == Fields.PHONE) {
-
             if (!value.matches("^\\d{10}$")) {
                 return createResponseMessage(update, "Bad phone number");
             }
             return createResponseMessage(update, "Phone updated\n\n"
                     + controller.updatePhoneById(id, value));
-
         }
 
         if (field == Fields.COUNT) {
-
             if (!value.matches("^\\d{1,2}$")
                     || Integer.parseInt(data[1]) > 10
                     || Integer.parseInt(data[1]) < 0) {
@@ -266,16 +262,8 @@ public class AdminView {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-
             return createResponseMessage(update, "Payment added:\n" + controller.addPayment(payDay, id));
         }
-
         return createResponseMessage(update, "ERROR in updateCustomerInfo " + id + " " + value);
-    }
-
-    public SendMessage letsGo(Update update) {
-
-
-        return createResponseMessage(update, "Done");
     }
 }

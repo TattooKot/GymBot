@@ -4,7 +4,7 @@ import com.example.demo.bots.UserInfoBot;
 import com.example.demo.model.Customer;
 import com.example.demo.model.Payment;
 import com.example.demo.model.Visit;
-import com.example.demo.repository.CustomerRepositoryImpl;
+import com.example.demo.repository.impl.CustomerRepositoryImpl;
 import com.example.demo.repository.PaymentRepository;
 import com.example.demo.repository.VisitRepository;
 import org.springframework.stereotype.Component;
@@ -59,7 +59,6 @@ public class AdminBotController extends CrudController{
         paymentRepository.save(new Payment(id, payDay));
         customer.setCount(1);
 
-
         sendToUsersInfoBot(customer, "❗Додано 10 тренувань❗\nНагадую, що тренування дійсні\n" +
                 "Від: " +payDay.format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
                 "До: " + customer.getLastPayment().getLastDay().format(DateTimeFormatter.ofPattern("dd.MM")));
@@ -102,7 +101,6 @@ public class AdminBotController extends CrudController{
                     currentCustomer.setCount(currentCustomer.getCount() + 1);
                     visitRepository.save(new Visit(currentCustomer.getId(), visitDate));
                 }
-
                 sendToUsersInfoBot(currentCustomer, randomVisitMessage(date));
                 result.append(update(currentCustomer).getName()).append("\n");
             } else {
@@ -193,7 +191,6 @@ public class AdminBotController extends CrudController{
     }
 
     private void paymentNotification(Timer timer){
-
         getAll().forEach(customer -> {
             if(customer.isActive() && !customer.isNotification()) {
 
@@ -202,14 +199,16 @@ public class AdminBotController extends CrudController{
                                 .getLastDay()
                                 .minusDays(5);
 
-                Calendar weekBeforeNotification = GregorianCalendar.from(weekBeforeDay.atStartOfDay(ZoneId.systemDefault()));
+                Calendar weekBeforeNotification =
+                        GregorianCalendar.from(weekBeforeDay.atStartOfDay(ZoneId.systemDefault()));
                 weekBeforeNotification.set(Calendar.HOUR_OF_DAY, 10);
 
                 TimerTask task = new TimerTask() {
                     @Override
                     public void run() {
                         sendToUsersInfoBot(customer, "Тренування закінчуються "
-                                + customer.getLastPayment().getLastDay().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                                + customer.getLastPayment().getLastDay()
+                                .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
                                 + " \uD83D\uDCC5\uD83D\uDE35");
                         customer.setNotification(true);
                         update(customer);
@@ -219,7 +218,5 @@ public class AdminBotController extends CrudController{
                 timer.schedule(task, weekBeforeNotification.getTime());
             }
         });
-
     }
-
 }

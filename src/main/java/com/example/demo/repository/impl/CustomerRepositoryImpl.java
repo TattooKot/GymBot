@@ -1,6 +1,7 @@
-package com.example.demo.repository;
+package com.example.demo.repository.impl;
 
 import com.example.demo.model.Customer;
+import com.example.demo.repository.CustomerRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,8 @@ public class CustomerRepositoryImpl {
         List<Customer> customerList = new ArrayList<>();
         getAllInternal().stream()
                 .filter(Customer::isActive)
-                .forEach(c ->{
+                .forEach(c ->
+                {
                     if(c.getCount() >= 8
                             || (c.getLastPayment().getLastDay().minusDays(7).isBefore(LocalDate.now()))
                             || c.getName().contains("!"))

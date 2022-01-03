@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Customer;
-import com.example.demo.repository.CustomerRepositoryImpl;
+import com.example.demo.repository.impl.CustomerRepositoryImpl;
 import org.springframework.stereotype.Component;
 
 @Component

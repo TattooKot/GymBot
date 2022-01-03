@@ -152,5 +152,4 @@ public class UserInfoView {
     private boolean chatIdPresent(Customer customer){
         return customer.getChatId() != 0;
     }
-
 }
