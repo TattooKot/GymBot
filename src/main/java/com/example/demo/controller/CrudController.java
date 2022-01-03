@@ -1,26 +1,26 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Client;
-import com.example.demo.repository.ClientRepositoryImpl;
+import com.example.demo.model.Customer;
+import com.example.demo.repository.CustomerRepositoryImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 public class CrudController {
-    protected final ClientRepositoryImpl repository;
+    protected final CustomerRepositoryImpl repository;
 
-    public CrudController(ClientRepositoryImpl repository) {
+    public CrudController(CustomerRepositoryImpl repository) {
         this.repository = repository;
     }
 
-    public List<Client> getAll(){
-        List<Client> clientList = repository.getAll();
-        clientList.removeIf(c -> !c.isActive());
-        return clientList;
+    public List<Customer> getAll(){
+        List<Customer> customerList = repository.getAll();
+        customerList.removeIf(c -> !c.isActive());
+        return customerList;
     }
 
-    public List<Client> getAbsolutelyAll(){
+    public List<Customer> getAbsolutelyAll(){
         return repository.getAll();
     }
 
@@ -28,15 +28,15 @@ public class CrudController {
         return repository.checkById(id);
     }
 
-    public Client getById(int id){
+    public Customer getById(int id){
         return repository.getById(id);
     }
 
-    public Client createNew(Client client){
-        return repository.create(client);
+    public Customer createNew(Customer customer){
+        return repository.create(customer);
     }
 
-    public Client update(Client client) {
-        return repository.update(client);
+    public Customer update(Customer customer) {
+        return repository.update(customer);
     }
 }

@@ -1,7 +1,7 @@
 package com.example.demo.view;
 
 import com.example.demo.controller.UserBotController;
-import com.example.demo.model.Client;
+import com.example.demo.model.Customer;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -74,13 +74,13 @@ public class UserInfoView {
                     "Спробуй ще раз\uD83D\uDE43");
         }
 
-        Client client = controller.getByPhone(phone);
+        Customer customer = controller.getByPhone(phone);
 
-        if(chatIdPresent(client)){
+        if(chatIdPresent(customer)){
             return createResponseMessage(update, "Користувач з цим номером телефону вже зареєєструвався\uD83E\uDDD0");
         }
-        client.setChatid(id);
-        controller.update(client);
+        customer.setChatId(id);
+        controller.update(customer);
 
         return createResponseMessage(update, "Є контакт \uD83D\uDE0A\n" +
                 "\n" +
@@ -119,9 +119,9 @@ public class UserInfoView {
         if(checkChatId(chatId)){
             return createResponseMessage(update, "ChatId does not exist");
         }
-        Client client = controller.getByChatId(chatId);
-        client.setChatid(0);
-        controller.update(client);
+        Customer customer = controller.getByChatId(chatId);
+        customer.setChatId(0);
+        controller.update(customer);
         return createResponseMessage(update, "ChatId reset completed");
     }
 
@@ -134,23 +134,23 @@ public class UserInfoView {
     }
 
     private boolean checkPhone(String phone){
-        Client client = controller.getAbsolutelyAll().stream()
+        Customer customer = controller.getAbsolutelyAll().stream()
                 .filter(n -> n.getPhone().equals(phone))
                 .findFirst()
                 .orElse(null);
-        return Objects.nonNull(client);
+        return Objects.nonNull(customer);
     }
 
     private boolean checkChatId(int id){
-        Client client = controller.getAbsolutelyAll().stream()
-                .filter(n -> n.getChatid() == id)
+        Customer customer = controller.getAbsolutelyAll().stream()
+                .filter(n -> n.getChatId() == id)
                 .findFirst()
                 .orElse(null);
-        return Objects.isNull(client);
+        return Objects.isNull(customer);
     }
 
-    private boolean chatIdPresent(Client client){
-        return client.getChatid() != 0;
+    private boolean chatIdPresent(Customer customer){
+        return customer.getChatId() != 0;
     }
 
 }

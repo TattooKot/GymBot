@@ -26,11 +26,11 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(Integer customerId, LocalDate payday, LocalDate lastDay) {
+    public Payment(Integer customerId, LocalDate payday) {
         this.customer = new Customer();
         this.customer.setId(customerId);
         this.payday = payday;
-        this.lastDay = lastDay;
+        this.lastDay = payday.plusDays(35);
     }
 
     @Override

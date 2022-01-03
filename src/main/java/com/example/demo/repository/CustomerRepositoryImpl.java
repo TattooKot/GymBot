@@ -2,12 +2,14 @@ package com.example.demo.repository;
 
 import com.example.demo.model.Customer;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@Component
 public class CustomerRepositoryImpl {
     private final CustomerRepository customerRepository;
 

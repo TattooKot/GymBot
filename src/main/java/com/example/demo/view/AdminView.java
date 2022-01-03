@@ -2,12 +2,8 @@ package com.example.demo.view;
 
 
 import com.example.demo.controller.AdminBotController;
-import com.example.demo.model.Client;
 import com.example.demo.model.Customer;
 import com.example.demo.model.Fields;
-import com.example.demo.model.Payment;
-import com.example.demo.repository.CustomerRepository;
-import com.example.demo.repository.PaymentRepository;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -24,13 +20,9 @@ import java.util.Objects;
 public class AdminView {
 
     private final AdminBotController controller;
-    private final CustomerRepository customerRepository;
-    private final PaymentRepository paymentRepository;
 
-    public AdminView(AdminBotController controller, CustomerRepository customerRepository, PaymentRepository paymentRepository) {
+    public AdminView(AdminBotController controller) {
         this.controller = controller;
-        this.customerRepository = customerRepository;
-        this.paymentRepository = paymentRepository;
     }
 
     public SendMessage start(Update update){
@@ -38,7 +30,7 @@ public class AdminView {
                 "/get_all - all active" + "\n" +
                 "/get_all_all - get all" + "\n" +
                 "/pay_soon - pay soon" + "\n" +
-                "/create - create new client" + "\n" +
+                "/create - create new Customer" + "\n" +
                 "/delete {id} - delete by id" + "\n" +
                 "/send {text} - send all" + "\n" +
                 "/all_connected - all connected to bot" + "\n" +
@@ -55,13 +47,13 @@ public class AdminView {
     }
 
     public SendMessage getAll(Update update){
-        List<Client> clientList = controller.getAll();
-        return createResponseMessage(update, createStringFromListOfClients(clientList));
+        List<Customer> customerList = controller.getAll();
+        return createResponseMessage(update, createStringFromListOfCustomers(customerList));
     }
 
     public SendMessage paySoon(Update update){
-        List<Client> clientList = controller.paySoon();
-        return createResponseMessage(update, createStringFromListOfClients(clientList));
+        List<Customer> customerList = controller.paySoon();
+        return createResponseMessage(update, createStringFromListOfCustomers(customerList));
     }
 
     public SendMessage getById(Update update){
@@ -100,41 +92,41 @@ public class AdminView {
         String request = update.getMessage().getText();
         String date = request.substring(0,request.indexOf(" "));
 
-        List<String> clients = new ArrayList<>(
+        List<String> customers = new ArrayList<>(
                 List.of(request.substring(request.indexOf(" "))
                         .trim()
                         .split(" ")));
 
-        for(String client : clients){
-            int id = checkId(client);
+        for(String customer : customers){
+            int id = checkId(customer);
             if(id == -1){
                 return createResponseMessage(update, "Неправильний Id: " + id);
             }
         }
 
-        return createResponseMessage(update,controller.addVisit(clients, date)
-                + "\n" + createStringFromListOfClients(controller.getAll()));
+        return createResponseMessage(update,controller.addVisit(customers, date)
+                + "\n" + createStringFromListOfCustomers(controller.getAll()));
 
     }
 
     public SendMessage addPayment(Update update) {
-        return updateClientInfo(update, Fields.PAYMENT);
+        return updateCustomerInfo(update, Fields.PAYMENT);
     }
 
     public SendMessage updatePhone(Update update){
-        return updateClientInfo(update, Fields.PHONE);
+        return updateCustomerInfo(update, Fields.PHONE);
     }
 
     public SendMessage updateCount(Update update){
-        return updateClientInfo(update, Fields.COUNT);
+        return updateCustomerInfo(update, Fields.COUNT);
     }
 
     public SendMessage updateName(Update update){
-        return updateClientInfo(update, Fields.NAME);
+        return updateCustomerInfo(update, Fields.NAME);
     }
 
     public SendMessage getAbsolutelyAll(Update update){
-        return createResponseMessage(update, createStringFromListOfClients(controller.getAbsolutelyAll()));
+        return createResponseMessage(update, createStringFromListOfCustomers(controller.getAbsolutelyAll()));
     }
 
     public SendMessage deleteById(Update update){
@@ -148,7 +140,7 @@ public class AdminView {
     }
 
     public SendMessage allConnectedToBot(Update update){
-        return createResponseMessage(update, createStringFromListOfClients(controller.allConnectedToBot()));
+        return createResponseMessage(update, createStringFromListOfCustomers(controller.allConnectedToBot()));
     }
 
     public SendMessage sendToAllUsers(Update update){
@@ -186,29 +178,29 @@ public class AdminView {
         return id;
     }
 
-    private String createStringFromListOfClients(List<Client> clientList){
+    private String createStringFromListOfCustomers(List<Customer> customerList){
         StringBuilder stringBuilder = new StringBuilder();
 
-        for(Client client : clientList) {
-            if (client.getCount() >= 8) {
+        for(Customer customer : customerList) {
+            if (customer.getCount() >= 8) {
                 stringBuilder.append(String.format("%d.%s: %d(!)",
-                        client.getId(), client.getName(), client.getCount()));
+                        customer.getId(), customer.getName(), customer.getCount()));
 
-            } else if (client.getLastday().minusDays(7).isBefore(LocalDate.now())) {
+            } else if (customer.getLastPayment().getLastDay().minusDays(7).isBefore(LocalDate.now())) {
                 stringBuilder.append(String.format("%d.%s: %d(t)",
-                        client.getId(), client.getName(), client.getCount()));
+                        customer.getId(), customer.getName(), customer.getCount()));
             } else {
                 stringBuilder.append(String.format("%d.%s: %d",
-                        client.getId(), client.getName(), client.getCount()));
+                        customer.getId(), customer.getName(), customer.getCount()));
             }
 
-            if(!client.isActive()){
+            if(!customer.isActive()){
                 stringBuilder.append("(N/A)");
             }
             stringBuilder.append("\n");
         }
 
-        stringBuilder.append("\n").append("Count: ").append(clientList.size());
+        stringBuilder.append("\n").append("Count: ").append(customerList.size());
 
         return stringBuilder.toString();
     }
@@ -223,7 +215,7 @@ public class AdminView {
         return request.split(" ");
     }
 
-    private SendMessage updateClientInfo(Update update, Fields field){
+    private SendMessage updateCustomerInfo(Update update, Fields field){
         String[] data = getDataArrayFromRequest(update,field.toString());
 
         if(Objects.isNull(data)){
@@ -266,8 +258,11 @@ public class AdminView {
             value += ".2022";
             LocalDate payDay = null;
             try {
-                payDay = new SimpleDateFormat("dd.MM.yyyy").parse(value)
-                        .toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                payDay = new SimpleDateFormat("dd.MM.yyyy")
+                        .parse(value)
+                        .toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -275,16 +270,11 @@ public class AdminView {
             return createResponseMessage(update, "Payment added:\n" + controller.addPayment(payDay, id));
         }
 
-        return createResponseMessage(update, "ERROR in updateClientInfo " + id + " " + value);
+        return createResponseMessage(update, "ERROR in updateCustomerInfo " + id + " " + value);
     }
 
     public SendMessage letsGo(Update update) {
-        List<Client> allClient = controller.getAbsolutelyAll();
 
-        for(Client client : allClient) {
-            Customer customer = customerRepository.getCustomerByName(client.getName());
-            paymentRepository.save(new Payment(customer.getId(), client.getPayday(), client.getLastday()));
-        }
 
         return createResponseMessage(update, "Done");
     }

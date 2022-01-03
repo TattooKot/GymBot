@@ -1,10 +1,16 @@
 package com.example.demo.controller;
 
 import com.example.demo.bots.UserInfoBot;
-import com.example.demo.model.Client;
-import com.example.demo.repository.ClientRepositoryImpl;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Payment;
+import com.example.demo.model.Visit;
+import com.example.demo.repository.CustomerRepositoryImpl;
+import com.example.demo.repository.PaymentRepository;
+import com.example.demo.repository.VisitRepository;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -14,112 +20,129 @@ import java.util.stream.Collectors;
 @Component
 public class AdminBotController extends CrudController{
 
+    private final PaymentRepository paymentRepository;
+    private final VisitRepository visitRepository;
     private final UserInfoBot userInfoBot;
     private Timer timer = new Timer();
 
-    public AdminBotController(ClientRepositoryImpl repository, UserInfoBot userInfoBot) {
+    public AdminBotController(CustomerRepositoryImpl repository, PaymentRepository paymentRepository, VisitRepository visitRepository, UserInfoBot userInfoBot) {
         super(repository);
+        this.paymentRepository = paymentRepository;
+        this.visitRepository = visitRepository;
         this.userInfoBot = userInfoBot;
     }
 
     @Override
-    public Client createNew(Client client) {
+    public Customer createNew(Customer customer) {
         updateTimer();
-        return super.createNew(client);
+        return super.createNew(customer);
     }
 
-    public Client addPayment(LocalDate payDay, int id){
-        Client client = getById(id);
-        client.setNotification(false);
+    public Customer addPayment(LocalDate payDay, int id){
+        Customer customer = getById(id);
+        customer.setNotification(false);
         updateTimer();
 
         //if trainings started already
-        if(client.getName().contains("(!)")){
-            client.setName(client.getName().replace("(!)", ""));
+        if(customer.getName().contains("(!)")){
+            customer.setName(customer.getName().replace("(!)", ""));
 
-            sendToUsersInfoBot(client, "❗Додано 10 тренувань❗\n" +
+            sendToUsersInfoBot(customer, "❗Додано 10 тренувань❗\n" +
                     "Нагадую що тренування дійсні\n" +
-                    "Від: " +client.getPayday().format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
-                    "До: " + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM")));
+                    "Від: " +customer.getLastPayment().getPayday().format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
+                    "До: " + customer.getLastPayment().getLastDay().format(DateTimeFormatter.ofPattern("dd.MM")));
 
-            return update(client);
+            return update(customer);
         }
 
         //if everything okay, add new 10 trainings
-        client.setPayday(payDay);
-        client.setCount(1);
+        paymentRepository.save(new Payment(id, payDay));
+        customer.setCount(1);
 
-        if(!client.getFrequency().contains(payDay.format(DateTimeFormatter.ofPattern("dd.MM")))){
-            client.setFrequency(payDay.format(DateTimeFormatter.ofPattern("dd.MM"))+ "(payday)," + client.getFrequency());
-        }
 
-        sendToUsersInfoBot(client, "❗Додано 10 тренувань❗\nНагадую, що тренування дійсні\n" +
+        sendToUsersInfoBot(customer, "❗Додано 10 тренувань❗\nНагадую, що тренування дійсні\n" +
                 "Від: " +payDay.format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
-                "До: " + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM")));
+                "До: " + customer.getLastPayment().getLastDay().format(DateTimeFormatter.ofPattern("dd.MM")));
 
-        return update(client);
+        return update(customer);
     }
 
     public String addVisit(List<String> idList, String date){
-        List<Client> clientList = idList.stream()
+        date = date + ".2022";
+
+        List<Customer> customerList = idList.stream()
                 .map(Integer::parseInt)
                 .map(this::getById)
                 .collect(Collectors.toList());
 
+        LocalDate visitDate;
+        try {
+            visitDate = new SimpleDateFormat("dd.MM.yyyy")
+                    .parse(date)
+                    .toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "Problem with date";
+        }
+
         StringBuilder result = new StringBuilder(date + "\n");
 
-        for(Client currentClient : clientList) {
+        for(Customer currentCustomer : customerList) {
+            boolean visitExist = currentCustomer.getVisits().stream().anyMatch(visit -> visit.getDate().equals(visitDate));
 
-            if (!currentClient.getFrequency().contains(date)) {
-                if (currentClient.getCount() == 10) {
-                    currentClient.setName(currentClient.getName() + "(!)");
-                    currentClient.setFrequency(date + "(!)," + currentClient.getFrequency());
-                    currentClient.setCount(1);
-                    currentClient.setPayday(LocalDate.now());
+            if(!visitExist){
+                if (currentCustomer.getCount() == 10) {
+                    currentCustomer.setName(currentCustomer.getName() + "(!)");
+                    visitRepository.save(new Visit(currentCustomer.getId(), visitDate));
+                    currentCustomer.setCount(1);
+                    paymentRepository.save(new Payment(currentCustomer.getId(), visitDate));
                 } else {
-                    currentClient.setCount(currentClient.getCount() + 1);
-                    currentClient.setFrequency(date + "," + currentClient.getFrequency());
+                    currentCustomer.setCount(currentCustomer.getCount() + 1);
+                    visitRepository.save(new Visit(currentCustomer.getId(), visitDate));
                 }
 
-                sendToUsersInfoBot(currentClient, randomVisitMessage(date));
-                result.append(update(currentClient).getName()).append("\n");
-
-            } else result.append(update(currentClient).getName()).append("(++)").append("\n");
+                sendToUsersInfoBot(currentCustomer, randomVisitMessage(date));
+                result.append(update(currentCustomer).getName()).append("\n");
+            } else {
+                result.append(update(currentCustomer).getName()).append("(++)").append("\n");
+            }
         }
         updateTimer();
         return result.toString();
     }
 
-    public List<Client> paySoon() {
+    public List<Customer> paySoon() {
         return repository.paySoon();
     }
 
-    public List<Client> allConnectedToBot(){
+    public List<Customer> allConnectedToBot(){
         return getAbsolutelyAll().stream()
-                .filter(c -> c.getChatid() != 0)
+                .filter(c -> c.getChatId() != 0)
                 .collect(Collectors.toList());
     }
 
-    public Client updateCountById(int id, int count){
-        Client client = getById(id);
+    public Customer updateCountById(int id, int count){
+        Customer client = getById(id);
         client.setCount(count);
         return update(client);
     }
 
-    public Client updatePhoneById(int id, String phone){
-        Client client = getById(id);
+    public Customer updatePhoneById(int id, String phone){
+        Customer client = getById(id);
         client.setPhone(phone);
         return update(client);
     }
     
-    public Client updateNameById(int id, String name){
-        Client client = getById(id);
+    public Customer updateNameById(int id, String name){
+        Customer client = getById(id);
         client.setName(name);
         return update(client);
     }
 
     public void notActive(int id){
-        Client client = getById(id);
+        Customer client = getById(id);
         client.setActive(false);
         client.setNotification(true);
         update(client);
@@ -127,7 +150,7 @@ public class AdminBotController extends CrudController{
     }
 
     public void activeAgain(int id){
-        Client client = getById(id);
+        Customer client = getById(id);
         client.setActive(true);
         client.setNotification(false);
         update(client);
@@ -139,16 +162,16 @@ public class AdminBotController extends CrudController{
         updateTimer();
     }
 
-    public void sendToUsersInfoBot(Client client, String text){
-        if(client.getChatid() == 0){
+    public void sendToUsersInfoBot(Customer customer, String text){
+        if(customer.getChatId() == 0){
             return;
         }
-        userInfoBot.messageToUser(client.getChatid(), text);
+        userInfoBot.messageToUser(customer.getChatId(), text);
     }
 
     public void sendToAllUsers(String text){
         getAll().stream()
-                .filter(c -> !c.getChatid().equals(0))
+                .filter(c -> !c.getChatId().equals(0))
                 .forEach(c -> sendToUsersInfoBot(c,text));
     }
 
@@ -171,21 +194,25 @@ public class AdminBotController extends CrudController{
 
     private void paymentNotification(Timer timer){
 
-        getAll().forEach(client -> {
-            if(client.isActive() && !client.isNotification()) {
+        getAll().forEach(customer -> {
+            if(customer.isActive() && !customer.isNotification()) {
 
-                LocalDate weekBeforeDay = client.getLastday().minusDays(5);
+                LocalDate weekBeforeDay =
+                        customer.getLastPayment()
+                                .getLastDay()
+                                .minusDays(5);
+
                 Calendar weekBeforeNotification = GregorianCalendar.from(weekBeforeDay.atStartOfDay(ZoneId.systemDefault()));
                 weekBeforeNotification.set(Calendar.HOUR_OF_DAY, 10);
 
                 TimerTask task = new TimerTask() {
                     @Override
                     public void run() {
-                        sendToUsersInfoBot(client, "Тренування закінчуються "
-                                + client.getLastday().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                        sendToUsersInfoBot(customer, "Тренування закінчуються "
+                                + customer.getLastPayment().getLastDay().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
                                 + " \uD83D\uDCC5\uD83D\uDE35");
-                        client.setNotification(true);
-                        update(client);
+                        customer.setNotification(true);
+                        update(customer);
                     }
                 };
 

@@ -1,25 +1,25 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Client;
-import com.example.demo.repository.ClientRepositoryImpl;
+import com.example.demo.model.Customer;
+import com.example.demo.repository.CustomerRepositoryImpl;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserBotController extends CrudController{
-    public UserBotController(ClientRepositoryImpl repository) {
+    public UserBotController(CustomerRepositoryImpl repository) {
         super(repository);
     }
 
-    public Client getByPhone(String phone){
+    public Customer getByPhone(String phone){
         return getAbsolutelyAll().stream()
                 .filter(c -> c.getPhone().equals(phone))
                 .findFirst()
                 .orElse(null);
     }
 
-    public Client getByChatId(Integer chatId){
+    public Customer getByChatId(Integer chatId){
         return getAbsolutelyAll().stream()
-                .filter(c -> c.getChatid().equals(chatId))
+                .filter(c -> c.getChatId().equals(chatId))
                 .findFirst()
                 .orElse(null);
     }

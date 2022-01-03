@@ -1,8 +1,12 @@
 package com.example.demo.model;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,10 +37,12 @@ public class Customer {
     @Column(name = "notification", nullable = false)
     private Boolean notification = false;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "customer")
     private List<Visit> visits;
 
-    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "customer")
     private List<Payment> payments;
 
     @Override
@@ -65,12 +71,13 @@ public class Customer {
             result.append("\n" + "К-сть: ").append(count);
         }
 
-
         if(visits.size()!=0){
             result.append("\n\n" + "Відвідування:  \n");
 
+            visits.sort((v1,v2) -> v1.getDate().isBefore(v2.getDate()) ? 1 : -1);
+
             for(Visit visit : visits){
-                result.append(visit.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+                result.append(visit.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))).append("\n");
             }
         }
         return result.toString();
