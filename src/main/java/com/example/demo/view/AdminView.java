@@ -3,7 +3,11 @@ package com.example.demo.view;
 
 import com.example.demo.controller.AdminBotController;
 import com.example.demo.model.Client;
+import com.example.demo.model.Customer;
 import com.example.demo.model.Fields;
+import com.example.demo.model.Payment;
+import com.example.demo.repository.CustomerRepository;
+import com.example.demo.repository.PaymentRepository;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -20,9 +24,13 @@ import java.util.Objects;
 public class AdminView {
 
     private final AdminBotController controller;
+    private final CustomerRepository customerRepository;
+    private final PaymentRepository paymentRepository;
 
-    public AdminView(AdminBotController controller) {
+    public AdminView(AdminBotController controller, CustomerRepository customerRepository, PaymentRepository paymentRepository) {
         this.controller = controller;
+        this.customerRepository = customerRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     public SendMessage start(Update update){
@@ -255,7 +263,7 @@ public class AdminView {
         }
 
         if (field == Fields.PAYMENT) {
-            value += ".2021";
+            value += ".2022";
             LocalDate payDay = null;
             try {
                 payDay = new SimpleDateFormat("dd.MM.yyyy").parse(value)
@@ -268,5 +276,16 @@ public class AdminView {
         }
 
         return createResponseMessage(update, "ERROR in updateClientInfo " + id + " " + value);
+    }
+
+    public SendMessage letsGo(Update update) {
+        List<Client> allClient = controller.getAbsolutelyAll();
+
+        for(Client client : allClient) {
+            Customer customer = customerRepository.getCustomerByName(client.getName());
+            paymentRepository.save(new Payment(customer.getId(), client.getPayday(), client.getLastday()));
+        }
+
+        return createResponseMessage(update, "Done");
     }
 }
