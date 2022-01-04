@@ -3,10 +3,11 @@ package com.example.demo.controller;
 import com.example.demo.bots.UserInfoBot;
 import com.example.demo.model.Customer;
 import com.example.demo.model.Payment;
-import com.example.demo.model.Visit;
-import com.example.demo.repository.impl.CustomerRepositoryImpl;
+import com.example.demo.model.PaymentFactory;
+import com.example.demo.model.VisitFactory;
 import com.example.demo.repository.PaymentRepository;
 import com.example.demo.repository.VisitRepository;
+import com.example.demo.repository.impl.CustomerRepositoryImpl;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -56,7 +57,7 @@ public class AdminBotController extends CrudController{
         }
 
         //if everything okay, add new 10 trainings
-        paymentRepository.save(new Payment(id, payDay));
+        paymentRepository.save(PaymentFactory.createPayment(id, payDay));
         customer.setCount(1);
 
         sendToUsersInfoBot(customer, "❗Додано 10 тренувань❗\nНагадую, що тренування дійсні\n" +
@@ -93,13 +94,13 @@ public class AdminBotController extends CrudController{
 
             if(!visitExist){
                 if (currentCustomer.getCount() == 10) {
-                    currentCustomer.setName(currentCustomer.getName() + "(!)");
-                    visitRepository.save(new Visit(currentCustomer.getId(), visitDate));
                     currentCustomer.setCount(1);
-                    paymentRepository.save(new Payment(currentCustomer.getId(), visitDate));
+                    currentCustomer.setName(currentCustomer.getName() + "(!)");
+                    visitRepository.save(VisitFactory.createVisit(currentCustomer.getId(), visitDate));
+                    paymentRepository.save(PaymentFactory.createPayment(currentCustomer.getId(), visitDate));
                 } else {
                     currentCustomer.setCount(currentCustomer.getCount() + 1);
-                    visitRepository.save(new Visit(currentCustomer.getId(), visitDate));
+                    visitRepository.save(VisitFactory.createVisit(currentCustomer.getId(), visitDate));
                 }
                 sendToUsersInfoBot(currentCustomer, randomVisitMessage(date));
                 result.append(update(currentCustomer).getName()).append("\n");

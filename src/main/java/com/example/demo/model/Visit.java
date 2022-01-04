@@ -23,15 +23,6 @@ public class Visit {
         return date.toString();
     }
 
-    public Visit() {
-    }
-
-    public Visit(Integer customerId, LocalDate date) {
-        this.customer = new Customer();
-        this.customer.setId(customerId);
-        this.date = date;
-    }
-
     public LocalDate getDate() {
         return date;
     }

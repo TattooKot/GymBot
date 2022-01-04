@@ -1,7 +1,5 @@
 package com.example.demo.model;
 
-import com.example.demo.model.Customer;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -22,16 +20,6 @@ public class Payment {
 
     @Column(name = "last_day", nullable = false)
     private LocalDate lastDay;
-
-    public Payment() {
-    }
-
-    public Payment(Integer customerId, LocalDate payday) {
-        this.customer = new Customer();
-        this.customer.setId(customerId);
-        this.payday = payday;
-        this.lastDay = payday.plusDays(35);
-    }
 
     @Override
     public String toString() {
@@ -55,16 +43,12 @@ public class Payment {
         this.payday = payday;
     }
 
-    public Integer getCustomerId() {
-        return this.customer.getId();
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCustomerId(Integer customerId) {
-        if(this.customer == null){
-            this.customer = new Customer();
-        }
-
-        this.customer.setId(customerId);
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public Integer getId() {
