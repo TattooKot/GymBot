@@ -1,14 +1,11 @@
 package com.example.demo.model;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Table(name = "customers")
@@ -37,13 +34,11 @@ public class Customer {
     @Column(name = "notification", nullable = false)
     private Boolean notification = false;
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private List<Visit> visits;
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "customer")
-    private List<Payment> payments;
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    private Set<Payment> payments;
 
     @Override
     public String toString() {
