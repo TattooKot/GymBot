@@ -2,6 +2,7 @@ package com.example.demo.view;
 
 import com.example.demo.controller.AdminBotController;
 import com.example.demo.model.Customer;
+import com.example.demo.model.CustomerFactory;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -22,7 +23,7 @@ public class CreateNewCustomerView {
     }
 
     public SendMessage createNew(Update update){
-        customer = new Customer();
+        customer = CustomerFactory.createCustomer();
         wantCreate = true;
         return createResponseMessage(update, "Lets start! Enter name:");
     }

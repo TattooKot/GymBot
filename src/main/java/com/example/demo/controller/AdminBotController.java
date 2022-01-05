@@ -42,7 +42,6 @@ public class AdminBotController extends CrudController{
     public Customer addPayment(LocalDate payDay, int id){
         Customer customer = getById(id);
         customer.setNotification(false);
-        updateTimer();
 
         //if trainings started already
         if(customer.getName().contains("(!)")){
@@ -58,12 +57,14 @@ public class AdminBotController extends CrudController{
 
         //if everything okay, add new 10 trainings
         paymentRepository.save(PaymentFactory.createPayment(id, payDay));
+        visitRepository.save(VisitFactory.createVisit(id, LocalDate.now()));
         customer.setCount(1);
 
         sendToUsersInfoBot(customer, "❗Додано 10 тренувань❗\nНагадую, що тренування дійсні\n" +
                 "Від: " +payDay.format(DateTimeFormatter.ofPattern("dd.MM")) + "\n" +
-                "До: " + customer.getLastPayment().getLastDay().format(DateTimeFormatter.ofPattern("dd.MM")));
+                "До: " + payDay.plusDays(35).format(DateTimeFormatter.ofPattern("dd.MM")));
 
+        updateTimer();
         return update(customer);
     }
 

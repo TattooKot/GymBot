@@ -74,7 +74,7 @@ public class Customer {
         if(visits.size()!=0){
             result.append("\n\n" + "Відвідування:  \n");
 
-            visits.sort((v1,v2) -> v1.getDate().isBefore(v2.getDate()) ? 1 : -1);
+            visits.sort((v1,v2) -> v1.getDate().isBefore(v2.getDate()) ? 1 : v1.getDate().equals(v2.getDate()) ? 0 : -1);
 
             for(Visit visit : visits){
                 result.append(visit.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))).append("\n");
