@@ -18,9 +18,6 @@ public class UserBotController extends CrudController{
     }
 
     public Customer getByChatId(Integer chatId){
-        return getAbsolutelyAll().stream()
-                .filter(c -> c.getChatId().equals(chatId))
-                .findFirst()
-                .orElse(null);
+        return repository.getByChatId(chatId);
     }
 }

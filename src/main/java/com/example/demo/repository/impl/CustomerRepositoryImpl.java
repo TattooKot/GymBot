@@ -50,6 +50,10 @@ public class CustomerRepositoryImpl {
         return customerRepository.findById(id).orElse(null);
     }
 
+    public Customer getByChatId(int id){
+        return customerRepository.findByChatId(id).orElse(null);
+    }
+
     public Customer update(Customer customer){
         return customerRepository.save(customer);
     }

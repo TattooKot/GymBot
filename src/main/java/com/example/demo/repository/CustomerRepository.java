@@ -12,4 +12,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     @EntityGraph(attributePaths = {"visits", "payments"})
     @NonNull
     Optional<Customer> findById(@NonNull Integer integer);
+
+    @EntityGraph(attributePaths = {"visits", "payments"})
+    Optional<Customer> findByChatId(Integer chatId);
 }
