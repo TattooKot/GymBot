@@ -57,7 +57,6 @@ public class AdminBotController extends CrudController{
 
         //if everything okay, add new 10 trainings
         paymentRepository.save(PaymentFactory.createPayment(id, payDay));
-        visitRepository.save(VisitFactory.createVisit(id, LocalDate.now()));
         customer.setCount(1);
 
         sendToUsersInfoBot(customer, "❗Додано 10 тренувань❗\nНагадую, що тренування дійсні\n" +

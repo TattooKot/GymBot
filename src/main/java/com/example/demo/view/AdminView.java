@@ -19,10 +19,10 @@ import java.util.Objects;
 @Component
 public class AdminView {
 
-    private final AdminBotController controller;
+    private final AdminBotController adminBotController;
 
-    public AdminView(AdminBotController controller) {
-        this.controller = controller;
+    public AdminView(AdminBotController adminBotController) {
+        this.adminBotController = adminBotController;
     }
 
     public SendMessage start(Update update){
@@ -47,12 +47,12 @@ public class AdminView {
     }
 
     public SendMessage getAll(Update update){
-        List<Customer> customerList = controller.getAll();
+        List<Customer> customerList = adminBotController.getAll();
         return createResponseMessage(update, createStringFromListOfCustomers(customerList));
     }
 
     public SendMessage paySoon(Update update){
-        List<Customer> customerList = controller.paySoon();
+        List<Customer> customerList = adminBotController.paySoon();
         return createResponseMessage(update, createStringFromListOfCustomers(customerList));
     }
 
@@ -63,7 +63,7 @@ public class AdminView {
             return createResponseMessage(update, "Id не знайдено, спробуй ще раз! \n");
         }
 
-        return createResponseMessage(update, controller.getById(id).toString());
+        return createResponseMessage(update, adminBotController.getById(id).toString());
     }
 
     public SendMessage notActive(Update update){
@@ -73,7 +73,7 @@ public class AdminView {
         if(id == -1){
             return createResponseMessage(update, "Неправильний id");
         }
-        controller.notActive(id);
+        adminBotController.notActive(id);
         return createResponseMessage(update, id + " деактивовано");
     }
 
@@ -84,7 +84,7 @@ public class AdminView {
         if(id == -1){
             return createResponseMessage(update, "Неправильний id");
         }
-        controller.activeAgain(id);
+        adminBotController.activeAgain(id);
         return createResponseMessage(update, id + " активовано");
     }
 
@@ -104,8 +104,8 @@ public class AdminView {
             }
         }
 
-        return createResponseMessage(update,controller.addVisit(customers, date)
-                + "\n" + createStringFromListOfCustomers(controller.getAll()));
+        return createResponseMessage(update, adminBotController.addVisit(customers, date)
+                + "\n" + createStringFromListOfCustomers(adminBotController.getAll()));
     }
 
     public SendMessage addPayment(Update update) {
@@ -125,7 +125,7 @@ public class AdminView {
     }
 
     public SendMessage getAbsolutelyAll(Update update){
-        return createResponseMessage(update, createStringFromListOfCustomers(controller.getAbsolutelyAll()));
+        return createResponseMessage(update, createStringFromListOfCustomers(adminBotController.getAbsolutelyAll()));
     }
 
     public SendMessage deleteById(Update update){
@@ -134,12 +134,12 @@ public class AdminView {
         if(id == -1){
             return createResponseMessage(update, "Неправильний id");
         }
-        controller.deleteById(id);
+        adminBotController.deleteById(id);
         return createResponseMessage(update, "Користувач видалений: " + id);
     }
 
     public SendMessage allConnectedToBot(Update update){
-        return createResponseMessage(update, createStringFromListOfCustomers(controller.allConnectedToBot()));
+        return createResponseMessage(update, createStringFromListOfCustomers(adminBotController.allConnectedToBot()));
     }
 
     public SendMessage sendToAllUsers(Update update){
@@ -149,7 +149,7 @@ public class AdminView {
         }
         text = text.replace("/send", "").trim();
 
-        controller.sendToAllUsers(text);
+        adminBotController.sendToAllUsers(text);
         return createResponseMessage(update, "Повідомлення надіслано");
     }
 
@@ -171,7 +171,7 @@ public class AdminView {
             return -1;
         }
         int id = Integer.parseInt(stringId);
-        if(!controller.checkById(id)) {
+        if(!adminBotController.checkById(id)) {
             return -1;
         }
         return id;
@@ -229,7 +229,7 @@ public class AdminView {
         }
 
         if (field == Fields.NAME) {
-            return createResponseMessage(update, "Name updated:\n" + controller.updateNameById(id, value));
+            return createResponseMessage(update, "Name updated:\n" + adminBotController.updateNameById(id, value));
         }
 
         if (field == Fields.PHONE) {
@@ -237,7 +237,7 @@ public class AdminView {
                 return createResponseMessage(update, "Bad phone number");
             }
             return createResponseMessage(update, "Phone updated\n\n"
-                    + controller.updatePhoneById(id, value));
+                    + adminBotController.updatePhoneById(id, value));
         }
 
         if (field == Fields.COUNT) {
@@ -247,7 +247,7 @@ public class AdminView {
                 return createResponseMessage(update, "Bad count");
             }
             return createResponseMessage(update, "Count updated:\n"
-                    + controller.updateCountById(id, Integer.parseInt(value)));
+                    + adminBotController.updateCountById(id, Integer.parseInt(value)));
         }
 
         if (field == Fields.PAYMENT) {
@@ -262,7 +262,9 @@ public class AdminView {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            return createResponseMessage(update, "Payment added:\n" + controller.addPayment(payDay, id));
+
+            Customer customer = adminBotController.addPayment(payDay, id);
+            return createResponseMessage(update, "Payment added for: " + customer.getName());
         }
         return createResponseMessage(update, "ERROR in updateCustomerInfo " + id + " " + value);
     }

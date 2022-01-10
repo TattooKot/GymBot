@@ -9,10 +9,15 @@ import java.util.Optional;
 
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     @Override
-    @EntityGraph(attributePaths = {"visits", "payments"})
+    @EntityGraph(attributePaths = {"payments", "visits"}, type = EntityGraph.EntityGraphType.LOAD)
     @NonNull
-    Optional<Customer> findById(@NonNull Integer integer);
+    Optional<Customer> findById(@NonNull Integer id);
 
-    @EntityGraph(attributePaths = {"visits", "payments"})
+    @EntityGraph(attributePaths = {"visits", "payments"}, type = EntityGraph.EntityGraphType.LOAD)
     Optional<Customer> findByChatId(Integer chatId);
+
+    @Override
+    @NonNull
+    @EntityGraph(attributePaths = {"visits", "payments"}, type = EntityGraph.EntityGraphType.LOAD)
+    Customer save(@NonNull Customer customer);
 }
