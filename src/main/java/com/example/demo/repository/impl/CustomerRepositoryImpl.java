@@ -62,6 +62,16 @@ public class CustomerRepositoryImpl {
         customerRepository.deleteById(id);
     }
 
+    public String getNameById(int id) {
+        Customer customer = customerRepository.findCustomerNameById(id).orElse(null);
+
+        if(customer == null){
+            return "Null exception in CustomerRepositoryImpl getNameById";
+        }
+
+        return customer.getName();
+    }
+
     private List<Customer> getAllInternal(){
         List<Customer> customerList = customerRepository.findAll();
         customerList.sort(Comparator.comparingInt(Customer::getId));

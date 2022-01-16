@@ -113,13 +113,25 @@ public class AdminBotController extends CrudController{
     }
 
     public List<Customer> paySoon() {
-        return repository.paySoon();
+        return customerRepository.paySoon();
     }
 
     public List<Customer> allConnectedToBot(){
         return getAbsolutelyAll().stream()
                 .filter(c -> c.getChatId() != 0)
                 .collect(Collectors.toList());
+    }
+
+    public String getCustomerPayments(int id) {
+        String name = customerRepository.getNameById(id);
+
+        StringBuilder result = new StringBuilder(name + "\n\n");
+        List<Payment> payments = paymentRepository.findAllByCustomerId(id);
+
+        payments.forEach(p -> result.append(p.getPayday()).append("/").append(p.getLastDay()).append("\n"));
+        result.trimToSize();
+
+        return result.toString();
     }
 
     public Customer updateCountById(int id, int count){
@@ -157,7 +169,7 @@ public class AdminBotController extends CrudController{
     }
 
     public void deleteById(int id){
-        repository.deleteById(id);
+        customerRepository.deleteById(id);
         updateTimer();
     }
 

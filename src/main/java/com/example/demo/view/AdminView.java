@@ -41,7 +41,8 @@ public class AdminView {
                 "Active {id} - set active true" + "\n" +
                 "Name {id} {name} - update name" + "\n" +
                 "Phone {id} {phone} - update phone" + "\n" +
-                "Count {id} {count} - update count" + "\n";
+                "Count {id} {count} - update count" + "\n" +
+                "Pay {id} - customer payments" + "\n";
 
         return createResponseMessage(update, result);
     }
@@ -64,6 +65,17 @@ public class AdminView {
         }
 
         return createResponseMessage(update, adminBotController.getById(id).toString());
+    }
+
+    public SendMessage customerPayments(Update update) {
+        String request = update.getMessage().getText().replace("Pay", "").trim();
+
+        int id = checkId(request);
+        if(id == -1){
+            return createResponseMessage(update, "Id не знайдено, спробуй ще раз! \n");
+        }
+
+        return createResponseMessage(update, adminBotController.getCustomerPayments(id));
     }
 
     public SendMessage notActive(Update update){

@@ -15,4 +15,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
     @EntityGraph(attributePaths = {"visits", "payments"}, type = EntityGraph.EntityGraphType.LOAD)
     Optional<Customer> findByChatId(Integer chatId);
+
+    Optional<Customer> findCustomerNameById(int id);
 }

@@ -8,35 +8,35 @@ import java.util.List;
 
 @Component
 public class CrudController {
-    protected final CustomerRepositoryImpl repository;
+    protected final CustomerRepositoryImpl customerRepository;
 
-    public CrudController(CustomerRepositoryImpl repository) {
-        this.repository = repository;
+    public CrudController(CustomerRepositoryImpl customerRepository) {
+        this.customerRepository = customerRepository;
     }
 
     public List<Customer> getAll(){
-        List<Customer> customerList = repository.getAll();
+        List<Customer> customerList = customerRepository.getAll();
         customerList.removeIf(c -> !c.isActive());
         return customerList;
     }
 
     public List<Customer> getAbsolutelyAll(){
-        return repository.getAll();
+        return customerRepository.getAll();
     }
 
     public boolean checkById(int id){
-        return repository.checkById(id);
+        return customerRepository.checkById(id);
     }
 
     public Customer getById(int id){
-        return repository.getById(id);
+        return customerRepository.getById(id);
     }
 
     public Customer createNew(Customer customer){
-        return repository.create(customer);
+        return customerRepository.create(customer);
     }
 
     public Customer update(Customer customer) {
-        return repository.update(customer);
+        return customerRepository.update(customer);
     }
 }

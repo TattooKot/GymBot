@@ -18,6 +18,6 @@ public class UserBotController extends CrudController{
     }
 
     public Customer getByChatId(Integer chatId){
-        return repository.getByChatId(chatId);
+        return customerRepository.getByChatId(chatId);
     }
 }
