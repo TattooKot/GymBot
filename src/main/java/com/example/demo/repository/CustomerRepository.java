@@ -15,9 +15,4 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
     @EntityGraph(attributePaths = {"visits", "payments"}, type = EntityGraph.EntityGraphType.LOAD)
     Optional<Customer> findByChatId(Integer chatId);
-
-    @Override
-    @NonNull
-    @EntityGraph(attributePaths = {"visits", "payments"}, type = EntityGraph.EntityGraphType.LOAD)
-    Customer save(@NonNull Customer customer);
 }

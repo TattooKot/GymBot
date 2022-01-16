@@ -3,6 +3,7 @@ package com.example.demo.model;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +36,7 @@ public class Customer {
     private Boolean notification = false;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
-    private List<Visit> visits;
+    private Set<Visit> visits;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
     private Set<Payment> payments;
@@ -68,10 +69,11 @@ public class Customer {
 
         if(visits.size()!=0){
             result.append("\n\n" + "Відвідування:  \n");
+            List<Visit> visitList = new ArrayList<>(visits);
 
-            visits.sort((v1,v2) -> v1.getDate().isBefore(v2.getDate()) ? 1 : v1.getDate().equals(v2.getDate()) ? 0 : -1);
+            visitList.sort((v1,v2) -> v1.getDate().isBefore(v2.getDate()) ? 1 : v1.getDate().equals(v2.getDate()) ? 0 : -1);
 
-            for(Visit visit : visits){
+            for(Visit visit : visitList){
                 result.append(visit.getDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))).append("\n");
             }
         }
@@ -85,11 +87,11 @@ public class Customer {
                 .get(payments.size()-1);
     }
 
-    public List<Visit> getVisits() {
+    public Set<Visit> getVisits() {
         return visits;
     }
 
-    public void setVisits(List<Visit> visits) {
+    public void setVisits(Set<Visit> visits) {
         this.visits = visits;
     }
 
